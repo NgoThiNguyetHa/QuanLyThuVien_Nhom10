@@ -6,6 +6,8 @@ import Login from './Screen/Login';
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavigationContainer } from '@react-navigation/native';
+import Menu from './Screen/Menu';
+import ManHinhChinh from './Screen/ManHinhChinh';
 
 const Stack = createNativeStackNavigator();
 
@@ -16,6 +18,8 @@ export default function App() {
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="ManHinhChao" component={ManHinhChao} />
         <Stack.Screen name="PhieuMuon" component={PhieuMuon} />
+        <Stack.Screen name="Menu" component={Menu} options={{ headerShown: false, gestureEnabled: false }}/>
+        <Stack.Screen name="ManHinhChinh" component={ManHinhChinh} />
 
       </Stack.Navigator>
     </NavigationContainer>
