@@ -60,7 +60,7 @@ export default function Login(props) {
           console.log("Thành công")
           // viết chuyển màn hình ở đây nhé bro
           await AsyncStorage.setItem('loginInfo', JSON.stringify(user));
-          // props.navigation.navigate('Menu');
+          props.navigation.navigate('Menu');
         }
       })
       .catch((error) => console.log("error", error));
