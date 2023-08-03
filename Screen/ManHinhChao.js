@@ -2,14 +2,16 @@ import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 import { StyleSheet, Text, View, Image } from 'react-native';
 
+
 export default function ManHinhChao({navigation}) {
   
-  // useEffect(() => {
-  //   const timer = setTimeout(() => {
-  //     navigation.replace('PhieuMuon'); // Chuyển đến màn hình chính sau 2 giây
-  //   }, 3000);
-  //   return () => clearTimeout(timer);
-  // }, []);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      navigation.replace('Login'); // Chuyển đến màn hình login sau 2 giây
+
+    }, 3000);
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
     <View style={styles.container}>
