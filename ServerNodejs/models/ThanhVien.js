@@ -6,7 +6,22 @@ const ThanhVienSchema = new mongoose.Schema({
     },
     namSinh:{
         type:String
-    }
+    },
+    mail:{
+        type:String
+    },
+    cccd:{
+        type:String
+    },
+    sdt:{
+        type:String
+    },
+    diaChi:{
+        type:String
+    },
+    image:{
+        type:String
+    },
 });
 
 module.exports = mongoose.model("thanhvien",ThanhVienSchema);
