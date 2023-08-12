@@ -2,38 +2,85 @@ import React from 'react'
 import { useEffect, useState } from "react";
 import { StyleSheet,Text, TextInput, View, Image , TouchableOpacity  , FlatList , Modal , Button,
 Alert} from 'react-native';
-
+import * as ImagePicker from 'expo-image-picker';
 export default function ThanhVienScreen() {
+  const hostname = '192.168.1.4';
   const [_id,setId] = useState();
   const [name,setName] = useState("");
   const [namSinh,setNamSinh] = useState("");
+  //them mới123
+  const [mail,setMail] = useState("123");
+  const [cccd,setCccd] = useState("123");
+  const [sdt,setSdt] = useState("123");
+  const [diaChi,setDiaChi] = useState("123");
+  const [picture , setPicture] = useState("");
+  const [image, setImage] = useState([]);
+  const [btnLeft , setBtnLeft] = useState("");
+  const [btnRight ,setBtnRight] = useState("");
+  //cũ
   const [listThanhVien,setListThanhVien] = useState([]);
-  
   const [modalVisible, setModalVisible] = useState(false);
   const [loading, setLoading] = useState(true);
+  
+  //click image
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true, // Tắt tùy chọn chỉnh sửa
+      aspect: [4, 3],
+      quality: 1,
+      allowsMultipleSelection: false
+    });
+  
+    console.log(result.uri);
+  
+    if (!result.cancelled && result.assets && result.assets.length > 0) {
+      setImage(result.assets[0].uri , {
+        uri: result.assets[0].uri,
+        type: 'image/jpeg', 
+        name: 'image.jpg',
+      });
+      setPicture(result.assets[0].uri);
+    }
+  };
   //insert dữ liệu
-  const handleSubmit = (name , namSinh) => {
+  const handleSubmit = (name , namSinh , mail , cccd , sdt , diaChi ) => {
     const allInputValue = {
       name:name,
       namSinh:namSinh,
+      //mới
+      mail:mail,
+      cccd : cccd ,
+      sdt : sdt ,
+      diaChi : diaChi,
+      image: picture,
     };
-    fetch('http://192.168.126.1:3000/insertThanhVien', {
+    fetch(`http://${hostname}:3000/insertThanhVien`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(allInputValue),
     })
-    getListThanhVien();
+  
     setModalVisible(!modalVisible)
+    getListThanhVien();
     Alert.alert("Them thanh cong");
     setName("");
-    setNamSinh("")
+    setNamSinh("");
+    setMail("");
+    setCccd("")
+    setSdt("")
+    setDiaChi("")
+    setPicture("")
+    setImage([])
+    setBtnLeft("")
+    setBtnRight("")
     console.log(allInputValue);
   };
   //lấy dữ liệu
   const getListThanhVien = () => {
-    fetch("http://192.168.126.1:3000/getThanhVien", {
+    fetch(`http://${hostname}:3000/getThanhVien`, {
       method:"GET"
   }).then(res => {
     return res.json()
@@ -53,7 +100,7 @@ export default function ThanhVienScreen() {
 
   //delete dữ liệu thanh vien
   const handleRemove = (_id) => {
-     fetch(`http://192.168.126.1:3000/deleteThanhVien/${_id}`, {
+     fetch(`http://${hostname}:3000/deleteThanhVien/${_id}`, {
        method: "DELETE",
        headers: {
          'Accept': "application/json",
@@ -65,6 +112,15 @@ export default function ThanhVienScreen() {
        .then((res) => {
          console.log(res);
          getListThanhVien();
+         setId(0);
+         setName("");
+         setNamSinh("")
+         setMail("");
+         setCccd("")
+         setSdt("")
+         setDiaChi("")
+         setPicture("")
+         setImage([])
        })
        .catch((err) => {
          console.log(err);
@@ -72,12 +128,18 @@ export default function ThanhVienScreen() {
   }
 
   //update api thanh vien
-  const handleUpdate = (_id , name , namSinh) => {
+  const handleUpdate = (_id , name , namSinh , mail , cccd , sdt, diaChi , picture) => {
     const allInputValue = {
       name:name,
       namSinh:namSinh,
+      //mới
+      mail:mail,
+      cccd : cccd ,
+      sdt : sdt ,
+      diaChi : diaChi,
+      image: picture,
     };
-     fetch(`http://192.168.126.1:3000/updateThanhVien/${_id}`, {
+     fetch(`http://${hostname}:3000/updateThanhVien/${_id}`, {
        method: "PUT",
        headers: {
          'Accept': "application/json",
@@ -94,18 +156,29 @@ export default function ThanhVienScreen() {
          setId(0);
          setName("");
          setNamSinh("")
+         setMail("");
+         setCccd("")
+         setSdt("")
+         setDiaChi("")
+         setPicture("")
+         setImage([])
        })
        .catch((err) => {
          console.log(err);
        });
   }
   //lấy vị trí từng item đổ lên textinput để update
-  const edit = (id , name , namSinh) => {
+  const edit = (id , name , namSinh , mail , cccd , sdt , diaChi , image) => {
     console.log(id);
     setModalVisible(!modalVisible)
     setId(id)
     setName(name)
     setNamSinh(namSinh)
+    setMail(mail)
+    setCccd(cccd)
+    setSdt(sdt)
+    setDiaChi(diaChi)
+    setImage(image)
   }
 
   return (
@@ -134,6 +207,12 @@ export default function ThanhVienScreen() {
         onRefresh={() => getListThanhVien()}
         refreshing={loading}
         renderItem={({ item }) => (
+          <TouchableOpacity
+          onPress={() => {setModalVisible(true),
+          setBtnLeft("Update") , 
+          setBtnRight("Delete") ,
+          edit(item._id, item.name, item.namSinh , item.mail , item.cccd , item.sdt , item.diaChi , item.image)
+          }}>
           <View
             style={{
               borderWidth: 0.5,
@@ -145,60 +224,29 @@ export default function ThanhVienScreen() {
               justifyContent: "space-between",
               alignItems: "center",
               backgroundColor: "#FAFAFA",
-              elevation: 5,
+              elevation: 3,
             }}
           >
+            <Image 
+            source={{ uri: item.image }}
+              style={{ width: 100, height: 100, borderRadius: 50  , alignSelf:"center" , borderColor:"gray" , borderWidth:0.2 , elevation: 10, }}/>
             <View style={{ flexDirection: "column", margin: 5 }}>
-            
+              
               <Text>Tên thành viên: {item.name}</Text>
               <Text>Năm sinh: {item.namSinh}</Text>
+              <Text>email: {item.mail}</Text>
+              <Text>cccd: {item.cccd}</Text>
+              <Text>sdt: {item.sdt}</Text>
             </View>
             {/* dialog delete */}
             <View style={{ flexDirection: "row", padding: 5 }}>
               {/* image delete  */}
-              <TouchableOpacity
-                onPress={() => {
-                  Alert.alert(
-                    //title
-                    'Thông Báo!',
-                    //body
-                    'Bạn có chắc chắn muốn xóa không?',
-                    [
-                      {
-                        text: 'Có',
-                        onPress: () => {
-                          handleRemove(item._id)
-                        }
-                      },
-                      {
-                        text: 'Không',
-                        onPress: () => console.log('No Pressed'), style: 'cancel'
-                      },
-                    ],
-                    {cancelable: false},
-                  );
-                }}
-              >
-                <Image
-                  source={require("../assets/download-removebg-preview(1).png")}
-                  style={{ width: 20  , height: 23 , margin:5 }}
-                />
-              </TouchableOpacity>
-              {/* image update  */}
-              <TouchableOpacity
-                onPress={() => {
-                  setModalVisible(true),
-                   edit(item._id, item.name, item.namSinh);
-                }}
-              >
-                <Image
-                  source={require("../assets/edit-247-removebg-preview.png")}
-                  style={{ width: 25, height: 25 , margin:5 }}
-                />
-              </TouchableOpacity>
+              
             </View>
 
           </View>
+          
+          </TouchableOpacity>
         )}
       />
       {/* dialog insert - update  */}
@@ -212,10 +260,23 @@ export default function ThanhVienScreen() {
       >
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
-            <Image
+            {/* <Image
               source={require("../assets/icondialoginsert.png")}
               style={{ width: 100, height: 100 , alignSelf:"center" }}
-            />
+            /> */}
+            {/* show hinh anh  */}
+      {image.length > 0 ? (
+        <Image
+          source={{ uri: image }}
+          style={{
+            width: 100,
+            height: 100,
+            borderRadius: 5,
+            alignSelf: "center",
+          }}
+        />
+      ) : //không có ảnh 
+      null}  
              {/* input name*/}
             <TextInput
               style={styles.inputStyle}
@@ -232,6 +293,58 @@ export default function ThanhVienScreen() {
               placeholder="Nhập năm sinh"
               onChangeText={(text) => setNamSinh(text)}
             />
+            {/* input mail */}
+            <TextInput
+              style={styles.inputStyle}
+              value={mail}
+              mode="outlined"
+              placeholder="Nhập mail"
+              onChangeText={(text) => setMail(text)}
+            />
+            {/* input căn cước công dân  */}
+            <TextInput
+              style={styles.inputStyle}
+              value={cccd}
+              mode="outlined"
+              placeholder="Nhập căn cước công dân"
+              onChangeText={(text) => setCccd(text)}
+            />
+            {/* input số điện thoại  */}
+            <TextInput
+              style={styles.inputStyle}
+              value={sdt}
+              mode="outlined"
+              placeholder="Nhập số điện thoại"
+              onChangeText={(text) => setSdt(text)}
+            />
+            {/* input số điện thoại  */}
+            <TextInput
+              style={styles.inputStyle}
+              value={diaChi}
+              mode="outlined"
+              placeholder="Nhập địa chỉ"
+              onChangeText={(text) => setDiaChi(text)}
+            />
+
+          {/* chọn ảnh  */}
+            <TouchableOpacity
+        style={{
+          width: "100%",
+          alignItems: "center",
+          flexDirection: "row",
+          justifyContent: "center",
+        }}
+        onPress={() => pickImage()}
+      >
+        <Image
+          style={{ width: 50, height: 50 }}
+          source={{
+            uri: "https://t4.ftcdn.net/jpg/02/17/88/73/360_F_217887350_mDfLv2ootQNeffWXT57VQr8OX7IvZKvB.jpg",
+          }}
+        />
+        <Text>Upload image</Text>
+        <Image />
+        </TouchableOpacity>
           {/* view button  */}
             <View
               style={{
@@ -241,25 +354,77 @@ export default function ThanhVienScreen() {
               }}
             >
               <Button
-                title="Save"
+                // title="Save"
+                title={btnLeft}
+
                 visible="false"
                 onPress={() => {
-                  if (_id && name && namSinh) { // nếu _id , name , namSinh == true trùng với dữ liệu th
-                    handleUpdate(_id, name, namSinh);
+                  if (_id && name && namSinh && mail && cccd && sdt && diaChi && image) { // nếu _id , name , namSinh == true trùng với dữ liệu th
+                    handleUpdate(_id, name, namSinh , mail , cccd , sdt ,diaChi , image );
                   } else {
-                    handleSubmit(name, namSinh);
+                    handleSubmit(name, namSinh , mail , cccd , sdt ,diaChi , image);
                   }
                 }}
                 style={[styles.button, styles.buttonClose]}
                 color="#525EAA"
               />
               <Button
-                title="Cancel"
+                // title="Cancel"
+                title={btnRight}
+
                 onPress={() => {
+                  if (_id) { 
+                    Alert.alert(
+                    //title
+                    'Thông Báo!',
+                    //body
+                    'Bạn có chắc chắn muốn xóa không?',
+                    [
+                      {
+                        text: 'Có',
+                        onPress: () => {
+                          // handleRemove(item._id)
+                          handleRemove(_id)
+                        }
+                      },
+                      {
+                        text: 'Không',
+                        onPress: () => {
+                          setId(0);
+                           setName("");
+                            setNamSinh("")
+                            //them moi
+                            setMail("");
+                            setCccd("")
+                            setSdt("")
+                            setDiaChi("")
+                            setPicture("")
+                            setImage([])
+                            setBtnLeft("")
+                            setBtnRight("")
+                        }, style: 'cancel'
+                      },
+                    ],
+                    {cancelable: false},
+                  );
+                    setModalVisible(false)
+                    
+                  }else{
                   setModalVisible(!modalVisible)
                   setId(0);
                   setName("");
                   setNamSinh("")
+                  //them moi
+                  setMail("");
+                  setCccd("")
+                  setSdt("")
+                  setDiaChi("")
+                  setPicture("")
+                  setImage([])
+                  setBtnLeft("")
+                  setBtnRight("")
+                  }
+                  
                 }}
                 color="#525EAA"
                 style={[styles.button, styles.buttonClose]}
@@ -286,7 +451,8 @@ export default function ThanhVienScreen() {
             overflow: 'hidden',
             padding:10
           }}
-          onPress={() => setModalVisible(true)}
+          onPress={() => {setModalVisible(true) , setBtnLeft("Save") , setBtnRight("Cancel")}
+          }
         >
           <Image
             style={{ width: 25    , height: 25 , padding:15  }}
@@ -296,9 +462,6 @@ export default function ThanhVienScreen() {
           />
         </TouchableOpacity>
       </View>
-
-
-
     </View>
   )
 }
@@ -368,3 +531,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
 });
+
+
+
+
