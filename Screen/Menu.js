@@ -1,20 +1,31 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, Image} from 'react-native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
-import PhieuMuon from './PhieuMuon';
 import ManHinhChinh from './ManHinhChinh';
 import { NavigationContainer } from '@react-navigation/native';
+import SachScreen from './SachScreen';
+import LoaiSachScreen from './LoaiSachScreen';
+import ThanhVienScreen from './ThanhVienScreen';
+import ThemNguoiDungScreen from './ThemNguoiDungScreen';
+import PhieuMuonScreen from './PhieuMuonScreen';
 
 const drawer = createDrawerNavigator();
 
 export default function Menu() {
   return (
     
+
       <drawer.Navigator initialRouteName="ManHinhChinh" >
-        <drawer.Screen name='ManHinhChinh' component={ManHinhChinh} />
-        <drawer.Screen name='PhieuMuon' component={PhieuMuon} />
+        {/* <Image/> */}
+        <drawer.Screen name='Trang chủ' component={ManHinhChinh} />
+        <drawer.Screen name='Quản lý phiếu mượn' component={PhieuMuonScreen} />
+        <drawer.Screen name='Quản lý loại sách' component={LoaiSachScreen} />
+        <drawer.Screen name='Quản lý sách' component={SachScreen} />
+        <drawer.Screen name='Quản lý thành viên' component={ThanhVienScreen} />
+        <drawer.Screen name='Thêm người dùng' component={ThemNguoiDungScreen} />
       </drawer.Navigator>
     
+
   );
 }
 

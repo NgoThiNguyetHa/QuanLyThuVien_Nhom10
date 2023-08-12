@@ -7,7 +7,7 @@ export default function ManHinhChao({navigation}) {
   
   useEffect(() => {
     const timer = setTimeout(() => {
-      navigation.replace('Login'); // Chuyển đến màn hình login sau 2 giây
+      navigation.replace('Đăng nhập'); // Chuyển đến màn hình login sau 2 giây
 
     }, 3000);
     return () => clearTimeout(timer);

@@ -2,7 +2,7 @@ import { StatusBar } from "expo-status-bar";
 import { useEffect, useState } from "react";
 import { FlatList, Image, StyleSheet, Text, View , Alert, Modal, Button, TextInput, TouchableOpacity } from "react-native";
 // import axios from 'axios';
-export default function ThemNguoiDung() {
+export default function ThemNguoiDungScreen() {
   const [username, setUsername] = useState("");
   const [hoTen, setHoTen] = useState("");
   const [password, setPassword] = useState("");
@@ -58,7 +58,7 @@ export default function ThemNguoiDung() {
       password: password,
       rePassword: rePassword,
     };
-    fetch('http://192.168.1.135:3000/insertNguoiDung', {
+    fetch('http://192.168.126.1:3000/insertNguoiDung', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
