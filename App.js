@@ -15,6 +15,7 @@ import ManHinhChinh from './Screen/ManHinhChinh';
 import LoaiSachScreen from './Screen/LoaiSachScreen';
 import SachScreen from './Screen/SachScreen';
 import PhieuMuonScreen from './Screen/PhieuMuonScreen';
+import ThanhVienScreen from './Screen/ThanhVienScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -30,7 +31,7 @@ export default function App() {
         <Stack.Screen name="Quản lý sách" component={SachScreen}/>
         <Stack.Screen name="Quản lý loại sách" component={LoaiSachScreen} />
 
-        <Stack.Screen name="Quản Lý Thành Viên" component={ThanhVien} />
+        <Stack.Screen name="Quản Lý Thành Viên" component={ThanhVienScreen} />
         <Stack.Screen name="Quản lý phiếu mượn" component={PhieuMuonScreen} />
         <Stack.Screen name="Menu" component={Menu} options={{ headerShown: false, gestureEnabled: false }}/>
         <Stack.Screen name="Trang chủ" component={ManHinhChinh} />

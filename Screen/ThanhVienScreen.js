@@ -4,15 +4,15 @@ import { StyleSheet,Text, TextInput, View, Image , TouchableOpacity  , FlatList 
 Alert} from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 export default function ThanhVienScreen() {
-  const hostname = '192.168.1.4';
+  const hostname = '192.168.126.1';
   const [_id,setId] = useState();
   const [name,setName] = useState("");
   const [namSinh,setNamSinh] = useState("");
   //them mới123
-  const [mail,setMail] = useState("123");
-  const [cccd,setCccd] = useState("123");
-  const [sdt,setSdt] = useState("123");
-  const [diaChi,setDiaChi] = useState("123");
+  const [mail,setMail] = useState("");
+  const [cccd,setCccd] = useState("");
+  const [sdt,setSdt] = useState("");
+  const [diaChi,setDiaChi] = useState("");
   const [picture , setPicture] = useState("");
   const [image, setImage] = useState([]);
   const [btnLeft , setBtnLeft] = useState("");
@@ -201,7 +201,7 @@ export default function ThanhVienScreen() {
       </View>
       {/* flat list - danh sách thành viên*/}
         <FlatList
-        style={{ flex: 0.9, width: "80%" ,  }}
+        style={{ flex: 0.9, width: "90%" ,  }}
         data={listThanhVien}
         keyExtractor={(item, index) => item._id}
         onRefresh={() => getListThanhVien()}
@@ -234,9 +234,9 @@ export default function ThanhVienScreen() {
               
               <Text>Tên thành viên: {item.name}</Text>
               <Text>Năm sinh: {item.namSinh}</Text>
-              <Text>email: {item.mail}</Text>
-              <Text>cccd: {item.cccd}</Text>
-              <Text>sdt: {item.sdt}</Text>
+              <Text>Email: {item.mail}</Text>
+              <Text>CCCD: {item.cccd}</Text>
+              <Text>Sdt: {item.sdt}</Text>
             </View>
             {/* dialog delete */}
             <View style={{ flexDirection: "row", padding: 5 }}>
@@ -366,7 +366,7 @@ export default function ThanhVienScreen() {
                   }
                 }}
                 style={[styles.button, styles.buttonClose]}
-                color="#525EAA"
+                color="#009ACD"
               />
               <Button
                 // title="Cancel"
@@ -426,7 +426,7 @@ export default function ThanhVienScreen() {
                   }
                   
                 }}
-                color="#525EAA"
+                color="#009ACD"
                 style={[styles.button, styles.buttonClose]}
               />
             </View>

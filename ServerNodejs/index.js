@@ -97,6 +97,11 @@ app.post('/insertThanhVien' , (req,res) => {
   const thanhvien = new ThanhVien({
     name: req.body.name,
     namSinh:req.body.namSinh,
+    mail: req.body.mail,
+    cccd: req.body.cccd,
+    sdt: req.body.sdt,
+    diaChi: req.body.diaChi,
+    image: req.body.image
   })
   thanhvien.save()
   .then(data => {

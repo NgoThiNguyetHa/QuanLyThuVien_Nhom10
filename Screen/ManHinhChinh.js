@@ -18,7 +18,7 @@ export default function ManHinhChinh({ navigation }) {
       </View>
 
       <View style={{ flex: 0.3, backgroundColor: "#B0E2F", flexDirection: "row", alignItems: 'center', }}>
-        <TouchableOpacity style={styles.item} onPress={() => { navigation.navigate('Quản lý Thành viên') }}>
+        <TouchableOpacity style={styles.item} onPress={() => { navigation.navigate('Quản Lý Thành Viên') }}>
           <Image style={{ width: 120, height: 120 }} source={require('../assets/img_thanhVien.png')} />
           <Text style={{ fontWeight: 'bold' }}>Thành viên</Text>
         </TouchableOpacity>
