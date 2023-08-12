@@ -278,7 +278,7 @@ export default function ThanhVienScreen() {
             margin: 10,
             borderRadius: 5,
             elevation: 100,
-            backgroundColor:"#525EAA",
+            backgroundColor:"#009ACD",
             borderBottomLeftRadius: 30,
             borderBottomRightRadius: 30,
             borderTopRightRadius: 30,
@@ -306,7 +306,7 @@ export default function ThanhVienScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#B0E2FF',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -316,7 +316,7 @@ const styles = StyleSheet.create({
   },
   //search view
   sectionStyle: {
-    width:"80%",
+    width:"85%",
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",

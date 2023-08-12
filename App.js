@@ -22,7 +22,7 @@ export default function App() {
   return (
     <NavigationContainer>
 
-      <Stack.Navigator initialRouteName='ManHinhChinh'>
+      <Stack.Navigator initialRouteName='ManHinhChao'>
         <Stack.Screen name="ManHinhChao" component={ManHinhChao} />
         <Stack.Screen name="ManHinhChinh" component={ManHinhChinh} />
         <Stack.Screen name="Đăng nhập" component={Login} />

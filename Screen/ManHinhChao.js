@@ -15,7 +15,7 @@ export default function ManHinhChao({navigation}) {
 
   return (
     <View style={styles.container}>
-      <Image style={{width:400, height:400}} source = {require('../assets/img_manHinhChao.png')}/>
+      <Image style={{width:350, height:350}} source = {require('../assets/img_manHinhChao.png')}/>
       <StatusBar style="auto" />
     </View>
   );

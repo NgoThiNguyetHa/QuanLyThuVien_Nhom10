@@ -78,9 +78,7 @@ export default function ThemNguoiDungScreen() {
     <View style={styles.container}>
       <Image
         style={styles.stretch}
-        source={{
-          uri: 'https://cdn.dribbble.com/users/1804673/screenshots/9443949/media/f114a64890767d899a3374fc7a1ef612.png?resize=400x0',
-        }}
+        source = {require('../assets/img_ThemNguoiDung.png')}
       />
       <View style={styles.sectionStyle}>
         {/* tên đăng nhập */}
@@ -165,7 +163,7 @@ export default function ThemNguoiDungScreen() {
           style={{
             borderWidth: 0.5,
             padding: 7,
-            backgroundColor: "#525EAA",
+            backgroundColor: "#009ACD",
             borderRadius: 5,
             margin: 15,
             borderColor: "white",
@@ -178,7 +176,7 @@ export default function ThemNguoiDungScreen() {
           style={{
             borderWidth: 0.5,
             padding: 7,
-            backgroundColor: "#525EAA",
+            backgroundColor: "#009ACD",
             borderRadius: 5,
             borderColor: "white",
             margin: 15,
@@ -197,7 +195,7 @@ export default function ThemNguoiDungScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "#B0E2FF",
     alignItems: "center",
     padding:15
   },
