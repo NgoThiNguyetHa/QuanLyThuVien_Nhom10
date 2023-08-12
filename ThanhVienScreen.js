@@ -1,69 +1,106 @@
-import { StatusBar } from "expo-status-bar";
+import React from 'react'
 import { useEffect, useState } from "react";
-import { FlatList, Image, StyleSheet, Text, View , Button, Alert, Modal,  } from "react-native";
-import {  TextInput, TouchableOpacity } from "react-native-web";
-export default function ThanhVien() {
-  const [id,setId] = useState(0);
-  const [name,setName] = useState("nhập tên");
-  const [namSinh,setNamSinh] = useState("nhập năm sinh");
+import { StyleSheet,Text, TextInput, View, Image , TouchableOpacity  , FlatList , Modal , Button,
+Alert} from 'react-native';
+import * as ImagePicker from 'expo-image-picker';
+export default function ThanhVienScreen() {
+  const hostname = '192.168.1.4';
+  const [_id,setId] = useState();
+  const [name,setName] = useState("");
+  const [namSinh,setNamSinh] = useState("");
+  //them mới123
+  const [mail,setMail] = useState("");
+  const [cccd,setCccd] = useState("");
+  const [sdt,setSdt] = useState("");
+  const [diaChi,setDiaChi] = useState("");
+  const [picture , setPicture] = useState("");
+  const [image, setImage] = useState([]);
+  const [btnLeft , setBtnLeft] = useState("");
+  const [btnRight ,setBtnRight] = useState("");
+  //cũ
   const [listThanhVien,setListThanhVien] = useState([]);
-  
   const [modalVisible, setModalVisible] = useState(false);
-  const [visisbleDelete , setVisibleDelete] = useState(false);
+  const [loading, setLoading] = useState(true);
+  
+  //click image
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true, // Tắt tùy chọn chỉnh sửa
+      aspect: [4, 3],
+      quality: 1,
+      allowsMultipleSelection: false
+    });
+  
+    console.log(result.uri);
+  
+    if (!result.cancelled && result.assets && result.assets.length > 0) {
+      setImage(result.assets[0].uri , {
+        uri: result.assets[0].uri,
+        type: 'image/jpeg', 
+        name: 'image.jpg',
+      });
+      setPicture(result.assets[0].uri);
+    }
+};
+  //insert dữ liệu
+  const handleSubmit = (name , namSinh , mail , cccd , sdt , diaChi ) => {
+    const allInputValue = {
+      name:name,
+      namSinh:namSinh,
+      //mới
+      mail:mail,
+      cccd : cccd ,
+      sdt : sdt ,
+      diaChi : diaChi,
+      image: picture,
+    };
+    fetch(`http://${hostname}:3000/insertThanhVien`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(allInputValue),
+    })
+  
+    setModalVisible(!modalVisible)
+    getListThanhVien();
+    Alert.alert("Them thanh cong");
+    setName("");
+    setNamSinh("");
+    setMail("");
+    setCccd("")
+    setSdt("")
+    setDiaChi("")
+    setPicture("")
+    setImage([])
+    setBtnLeft("")
+    setBtnRight("")
+    console.log(allInputValue);
+  };
+  //lấy dữ liệu
   const getListThanhVien = () => {
-    fetch("https://64b89a9421b9aa6eb079f300.mockapi.io/thanhvien", {
+    fetch(`http://${hostname}:3000/getThanhVien`, {
       method:"GET"
   }).then(res => {
     return res.json()
   }).then(res => {
     if(res){
       setListThanhVien(res)
+      setLoading(false);
     }
   }).catch(err => {
     console.log(err)
   })
   }
-  //get list thành viên
-  
-  // const handleSubmit = async (err) => {
-  //   err.preventDefault();
-  //   const allInputValue = {
-  //     name:name,
-  //     namSinh:namSinh,
-  //   };
-  //   let res = await fetch("https://64b89a9421b9aa6eb079f300.mockapi.io/thanhvien", {
-  //     method: "POST",
-  //     headers: { "content-type": "application/json" },
-  //     body: JSON.stringify(allInputValue),
-  //   });
-  //   setModalVisible(!modalVisible)
-  //   getListThanhVien();
-  //   console.log(allInputValue);
-  // };
-  
+  //tự đổ dữ liệu
   useEffect(() => {
     getListThanhVien()
-  })
-  const handleSubmit = (name , namSinh) => {
-    // err.preventDefault();
-    const allInputValue = {
-      name:name,
-      namSinh:namSinh,
-    };
-    fetch("https://64b89a9421b9aa6eb079f300.mockapi.io/thanhvien", {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify(allInputValue),
-    });
-    getListThanhVien();
-    setModalVisible(!modalVisible)
-    setName("nhập tên");
-    setNamSinh("nhập năm sinh")
-    console.log(allInputValue);
-  };
-  //delete api thanh vien
-  const handleRemove = (user_id) => {
-     fetch(`https://64b89a9421b9aa6eb079f300.mockapi.io/thanhvien/${user_id}`, {
+  },[])
+
+  //delete dữ liệu thanh vien
+  const handleRemove = (_id) => {
+     fetch(`http://${hostname}:3000/deleteThanhVien/${_id}`, {
        method: "DELETE",
        headers: {
          'Accept': "application/json",
@@ -75,6 +112,15 @@ export default function ThanhVien() {
        .then((res) => {
          console.log(res);
          getListThanhVien();
+         setId(0);
+         setName("");
+         setNamSinh("")
+         setMail("");
+         setCccd("")
+         setSdt("")
+         setDiaChi("")
+         setPicture("")
+         setImage([])
        })
        .catch((err) => {
          console.log(err);
@@ -82,12 +128,18 @@ export default function ThanhVien() {
   }
 
   //update api thanh vien
-  const handleUpdate = (id , name , namSinh) => {
+  const handleUpdate = (_id , name , namSinh , mail , cccd , sdt, diaChi , picture) => {
     const allInputValue = {
       name:name,
       namSinh:namSinh,
+      //mới
+      mail:mail,
+      cccd : cccd ,
+      sdt : sdt ,
+      diaChi : diaChi,
+      image: picture,
     };
-     fetch(`https://64b89a9421b9aa6eb079f300.mockapi.io/thanhvien/${id}`, {
+     fetch(`http://${hostname}:3000/updateThanhVien/${_id}`, {
        method: "PUT",
        headers: {
          'Accept': "application/json",
@@ -102,38 +154,33 @@ export default function ThanhVien() {
          getListThanhVien();
          setModalVisible(!modalVisible)
          setId(0);
-         setName("nhập tên");
-         setNamSinh("nhập năm sinh")
+         setName("");
+         setNamSinh("")
+         setMail("");
+         setCccd("")
+         setSdt("")
+         setDiaChi("")
+         setPicture("")
+         setImage([])
        })
        .catch((err) => {
          console.log(err);
        });
   }
-
-  const edit = (id , name , namSinh) => {
+  //lấy vị trí từng item đổ lên textinput để update
+  const edit = (id , name , namSinh , mail , cccd , sdt , diaChi , image) => {
+    console.log(id);
     setModalVisible(!modalVisible)
     setId(id)
     setName(name)
     setNamSinh(namSinh)
+    setMail(mail)
+    setCccd(cccd)
+    setSdt(sdt)
+    setDiaChi(diaChi)
+    setImage(image)
   }
-  
-  //post data lên server
-  // const handleSubmit = () => {
-  //   fetch('http://localhost:3000/api/addThanhVien', {
-  //     method: 'POST',
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //     },
-  //     body: JSON.stringify({ name, namSinh }),
-  //   })
-  //     .then((response) => response.json())
-  //     .then((data) => {
-  //       console.log(data);
-  //     })
-  //     .catch((error) => {
-  //       console.error('Error:', error);
-  //     });
-  // };
+
   return (
     <View style={styles.container}>
       <View style={styles.sectionStyle}>
@@ -152,104 +199,153 @@ export default function ThanhVien() {
           mode="outlined"
         />
       </View>
-      {/* flat list  */}
-      <FlatList
-        style={{ flex: 0.9, width: "50%" }}
+      {/* flat list - danh sách thành viên*/}
+        <FlatList
+        style={{ flex: 0.9, width: "80%" ,  }}
         data={listThanhVien}
-        keyExtractor={(item, index) => index.toString()}
+        keyExtractor={(item, index) => item._id}
+        onRefresh={() => getListThanhVien()}
+        refreshing={loading}
         renderItem={({ item }) => (
+          <TouchableOpacity
+          onPress={() => {setModalVisible(true),
+          setBtnLeft("Update") , 
+          setBtnRight("Delete") ,
+          edit(item._id, item.name, item.namSinh , item.mail , item.cccd , item.sdt , item.diaChi , item.image)
+          }}>
           <View
             style={{
               borderWidth: 0.5,
               borderRadius: 10,
-              margin: 5,
-              shadowColor: "gray",
-              shadowOffset: {
-                width: 0,
-                height: 2,
-              },
-              shadowRadius: 5,
-              shadowOpacity: 1.0,
+              margin: 10,
+              padding:5,
               flexDirection: "row",
               borderColor: "white",
               justifyContent: "space-between",
               alignItems: "center",
+              backgroundColor: "#FAFAFA",
+              elevation: 3,
             }}
           >
+            <Image 
+            source={{ uri: item.image }}
+              style={{ width: 100, height: 100, borderRadius: 50  , alignSelf:"center" , borderColor:"gray" , borderWidth:0.2 , elevation: 10, }}/>
             <View style={{ flexDirection: "column", margin: 5 }}>
-              <Text>
-                <span>Tên thành viên: </span>
-                {item.name}
-              </Text>
+              
+              <Text>Tên thành viên: {item.name}</Text>
               <Text>Năm sinh: {item.namSinh}</Text>
-            </View>
-
-            <View style={{ flexDirection: "column", padding: 5 }}>
-              {/* image delete  */}
-              <TouchableOpacity
-                onPress={() => {
-                  // handleRemove(item.id);
-                  alert("Alert Title", "My Alert Msg", [
-                    {
-                      text: "Cancel",
-                      onPress: () => console.log("Cancel Pressed"),
-                      style: "cancel",
-                    },
-                    { text: "OK", onPress: () => {handleRemove(item.id)} },
-                  ]);
-                }}
-              >
-                <Image
-                  source={require("../assets/download-removebg-preview (1).png")}
-                  style={{ width: 30, height: 30 }}
-                />
-              </TouchableOpacity>
-              {/* image update  */}
-              <TouchableOpacity
-                onPress={() => {
-                  setModalVisible(true), edit(item.id, item.name, item.namSinh);
-                }}
-              >
-                <Image
-                  source={require("../assets/edit-247-removebg-preview.png")}
-                  style={{ width: 30, height: 30 }}
-                />
-              </TouchableOpacity>
+              <Text>email: {item.mail}</Text>
+              <Text>cccd: {item.cccd}</Text>
+              <Text>sdt: {item.sdt}</Text>
             </View>
             {/* dialog delete */}
-      
+            <View style={{ flexDirection: "row", padding: 5 }}>
+              {/* image delete  */}
+              
+            </View>
+
           </View>
+          
+          </TouchableOpacity>
         )}
       />
-      {/* dialog  insert*/}
+      {/* dialog insert - update  */}
       <Modal
         animationType="slide"
         transparent={true}
         visible={modalVisible}
         onRequestClose={() => {
-          setModalVisible(!modalVisible);
+        setModalVisible(!modalVisible);
         }}
       >
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
-            <Image
-              source={require("../assets/image 56.png")}
-              style={{ width: 50, height: 50 }}
+            {/* <Image
+              source={require("../assets/icondialoginsert.png")}
+              style={{ width: 100, height: 100 , alignSelf:"center" }}
+            /> */}
+            {/* show hinh anh  */}
+      {image.length > 0 ? (
+        <Image
+          source={{ uri: image }}
+          style={{
+            width: 100,
+            height: 100,
+            borderRadius: 5,
+            alignSelf: "center",
+          }}
+        />
+      ) : //không có ảnh 
+      null}  
+             {/* input name*/}
+            <TextInput
+              style={styles.inputStyle}
+              value={name}
+              mode="outlined"
+              placeholder="Nhập tên"
+              onChangeText={(text) => setName(text)}
+            />
+          {/* input năm sinh  */}
+            <TextInput
+              style={styles.inputStyle}
+              value={namSinh}
+              mode="outlined"
+              placeholder="Nhập năm sinh"
+              onChangeText={(text) => setNamSinh(text)}
+            />
+            {/* input mail */}
+            <TextInput
+              style={styles.inputStyle}
+              value={mail}
+              mode="outlined"
+              placeholder="Nhập mail"
+              onChangeText={(text) => setMail(text)}
+            />
+            {/* input căn cước công dân  */}
+            <TextInput
+              style={styles.inputStyle}
+              value={cccd}
+              mode="outlined"
+              placeholder="Nhập căn cước công dân"
+              onChangeText={(text) => setCccd(text)}
+            />
+            {/* input số điện thoại  */}
+            <TextInput
+              style={styles.inputStyle}
+              value={sdt}
+              mode="outlined"
+              placeholder="Nhập số điện thoại"
+              onChangeText={(text) => setSdt(text)}
+            />
+            {/* input số điện thoại  */}
+            <TextInput
+              style={styles.inputStyle}
+              value={diaChi}
+              mode="outlined"
+              placeholder="Nhập địa chỉ"
+              onChangeText={(text) => setDiaChi(text)}
             />
 
-            <TextInput
-              label="Name"
-              placeholder="nhap ten"
-              value={name}
-              style={{ borderWidth: 1, padding: 3, margin: 5, width: "100%" }}
-              onChangeText={(newText) => setName(newText)}
-            />
-            <TextInput
-              placeholder="nhap nam sinh"
-              value={namSinh}
-              style={{ borderWidth: 1, padding: 3, margin: 5, width: "100%" }}
-              onChangeText={(newText) => setNamSinh(newText)}
-            />
+          {/* chọn ảnh  */}
+            <TouchableOpacity
+        style={{
+          width: "100%",
+          alignItems: "center",
+          flexDirection: "row",
+          justifyContent: "center",
+        }}
+        onPress={() => pickImage()}
+      >
+        <Image
+          style={{ width: 50, height: 50 }}
+          source={{
+            uri: "https://t4.ftcdn.net/jpg/02/17/88/73/360_F_217887350_mDfLv2ootQNeffWXT57VQr8OX7IvZKvB.jpg",
+          }}
+        />
+        <Text>Upload image</Text>
+        <Image />
+        </TouchableOpacity>
+          {/* view button  */}
             <View
               style={{
                 flexDirection: "row",
@@ -257,26 +353,79 @@ export default function ThanhVien() {
                 justifyContent: "space-evenly",
               }}
             >
-              {/* <Button title="Save" onPress={handleSubmit} 
-              style={[styles.button, styles.buttonClose ,]}
-              color="#525EAA"
-               /> */}
               <Button
-                title="Save"
+                // title="Save"
+                title={btnLeft}
+
+                visible="false"
                 onPress={() => {
-                  if (id && name && namSinh) {
-                    handleUpdate(id, name, namSinh);
+                  if (_id && name && namSinh && mail && cccd && sdt && diaChi && image) { // nếu _id , name , namSinh == true trùng với dữ liệu th
+                    handleUpdate(_id, name, namSinh , mail , cccd , sdt ,diaChi , image );
                   } else {
-                    handleSubmit(name, namSinh);
-                    // handleSubmit
+                    handleSubmit(name, namSinh , mail , cccd , sdt ,diaChi , image);
                   }
                 }}
                 style={[styles.button, styles.buttonClose]}
                 color="#525EAA"
               />
               <Button
-                title="Cancel"
-                onPress={() => setModalVisible(!modalVisible)}
+                // title="Cancel"
+                title={btnRight}
+
+                onPress={() => {
+                  if (_id) { 
+                    Alert.alert(
+                    //title
+                    'Thông Báo!',
+                    //body
+                    'Bạn có chắc chắn muốn xóa không?',
+                    [
+                      {
+                        text: 'Có',
+                        onPress: () => {
+                          // handleRemove(item._id)
+                          handleRemove(_id)
+                        }
+                      },
+                      {
+                        text: 'Không',
+                        onPress: () => {
+                          setId(0);
+                           setName("");
+                            setNamSinh("")
+                            //them moi
+                            setMail("");
+                            setCccd("")
+                            setSdt("")
+                            setDiaChi("")
+                            setPicture("")
+                            setImage([])
+                            setBtnLeft("")
+                            setBtnRight("")
+                        }, style: 'cancel'
+                      },
+                    ],
+                    {cancelable: false},
+                  );
+                    setModalVisible(false)
+                    
+                  }else{
+                  setModalVisible(!modalVisible)
+                  setId(0);
+                  setName("");
+                  setNamSinh("")
+                  //them moi
+                  setMail("");
+                  setCccd("")
+                  setSdt("")
+                  setDiaChi("")
+                  setPicture("")
+                  setImage([])
+                  setBtnLeft("")
+                  setBtnRight("")
+                  }
+                  
+                }}
                 color="#525EAA"
                 style={[styles.button, styles.buttonClose]}
               />
@@ -284,87 +433,75 @@ export default function ThanhVien() {
           </View>
         </View>
       </Modal>
-      
+
       {/* btn open dialog  */}
-      <View style={{ width: "50%", alignItems: "flex-end" }}>
+      <View style={{ width: "100%", alignItems: "flex-end" }}>
+        
         <TouchableOpacity
           style={{
-            borderWidth: 0.5,
-            borderRadius: 50,
-            shadowColor: "gray",
-            shadowOffset: {
-              width: 0,
-              height: 2,
-            },
             borderColor: "white",
-            shadowRadius: 10,
-            shadowOpacity: 1,
+            margin: 10,
+            borderRadius: 5,
+            elevation: 100,
+            backgroundColor:"#525EAA",
+            borderBottomLeftRadius: 30,
+            borderBottomRightRadius: 30,
+            borderTopRightRadius: 30,
+            borderTopLeftRadius: 30,
+            overflow: 'hidden',
+            padding:10
           }}
-          onPress={() => setModalVisible(true)}
+          onPress={() => {setModalVisible(true) , setBtnLeft("Save") , setBtnRight("Cancel")}
+          }
         >
           <Image
-            style={{ width: 50, height: 50 }}
+            style={{ width: 25    , height: 25 , padding:15  }}
             source={{
               uri: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/06/OOjs_UI_icon_add.svg/1024px-OOjs_UI_icon_add.svg.png",
             }}
           />
         </TouchableOpacity>
       </View>
-
-      <StatusBar style="auto" />
     </View>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   // search view
   inputContainer: {
     justifyContent: "center",
   },
+  //search view
   sectionStyle: {
-    width:"50%",
+    width:"80%",
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#fff",
-    borderWidth: 0.5,
-    borderColor: "#fff",
-    shadowColor: "gray",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
+    backgroundColor: "#FAFAFA",
+    borderWidth: 1,
     borderColor: "white",
-    shadowRadius: 5,
-    shadowOpacity: 1.0,
     margin: 10,
     borderRadius: 5,
+    elevation: 10,
   },
   // style dialog
    centeredView: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 22,
   },
   modalView: {
     margin: 20,
     backgroundColor: 'white',
     borderRadius: 20,
-    padding: 35,
-    alignItems: 'center',
+    padding: 30,
     shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
     elevation: 5,
   },
   button: {
@@ -373,7 +510,7 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   buttonOpen: {
-    backgroundColor: '#F194FF',
+    backgroundColor: '#525EAA',
   },
   buttonClose: {
     backgroundColor: "#525EAA",
@@ -387,5 +524,10 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     textAlign: 'center',
   },
-
+  inputStyle: {
+    margin: 5,
+    borderWidth: 1,
+    padding: 5,
+    borderRadius: 10,
+  },
 });
