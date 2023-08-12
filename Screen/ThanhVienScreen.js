@@ -17,7 +17,7 @@ export default function ThanhVienScreen() {
       name:name,
       namSinh:namSinh,
     };
-    fetch('http://192.168.1.135:3000/insertThanhVien', {
+    fetch('http://192.168.126.1:3000/insertThanhVien', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -33,7 +33,7 @@ export default function ThanhVienScreen() {
   };
   //lấy dữ liệu
   const getListThanhVien = () => {
-    fetch("http://192.168.1.135:3000/getThanhVien", {
+    fetch("http://192.168.126.1:3000/getThanhVien", {
       method:"GET"
   }).then(res => {
     return res.json()
@@ -53,7 +53,7 @@ export default function ThanhVienScreen() {
 
   //delete dữ liệu thanh vien
   const handleRemove = (_id) => {
-     fetch(`http://192.168.1.135:3000/deleteThanhVien/${_id}`, {
+     fetch(`http://192.168.126.1:3000/deleteThanhVien/${_id}`, {
        method: "DELETE",
        headers: {
          'Accept': "application/json",
@@ -77,7 +77,7 @@ export default function ThanhVienScreen() {
       name:name,
       namSinh:namSinh,
     };
-     fetch(`http://192.168.1.135:3000/updateThanhVien/${_id}`, {
+     fetch(`http://192.168.126.1:3000/updateThanhVien/${_id}`, {
        method: "PUT",
        headers: {
          'Accept': "application/json",

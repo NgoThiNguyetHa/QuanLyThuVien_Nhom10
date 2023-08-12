@@ -44,7 +44,7 @@ export default function Login(props) {
     //       }
     //     })
 
-    fetch("https://64b89a9421b9aa6eb079f300.mockapi.io/nguoidung")
+    fetch("http://192.168.126.1:3000/getNguoiDung")
       .then((response) => response.json())
       .then(async (result) => {
         // tìm user
@@ -60,7 +60,7 @@ export default function Login(props) {
           console.log("Thành công")
           // viết chuyển màn hình ở đây nhé bro
           await AsyncStorage.setItem('loginInfo', JSON.stringify(user));
-          // props.navigation.navigate('Menu');
+          props.navigation.navigate('Menu');
         }
       })
       .catch((error) => console.log("error", error));
@@ -72,7 +72,7 @@ export default function Login(props) {
         <Image style={{ width: 150, height: 150 }} source={require('../assets/img_manHinhChao.png')} />
 
       </View>
-      <View style={{ flex: 2, backgroundColor: '#fff', width: 350, borderTopLeftRadius: 30, borderTopRightRadius: 30, padding: 20 }}>
+      <View style={{ flex: 2, backgroundColor: '#fff', width: "100%", borderTopLeftRadius: 30, borderTopRightRadius: 30, padding: 20 }}>
         <Text style={{ color: "#525EAA", fontSize: 20, fontWeight: 'bold' }}>Welcome Back!</Text>
         <Text style={{ color: "#525EAA", fontSize: 20, fontWeight: 'bold' }}>Sign in your account</Text>
         <Text style={{marginTop:20, marginBottom:5}}>Username</Text>
