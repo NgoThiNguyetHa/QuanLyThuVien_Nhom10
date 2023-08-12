@@ -9,10 +9,10 @@ export default function ThanhVienScreen() {
   const [name,setName] = useState("");
   const [namSinh,setNamSinh] = useState("");
   //them mới
-  const [mail,setMail] = useState("123");
-  const [cccd,setCccd] = useState("123");
-  const [sdt,setSdt] = useState("123");
-  const [diaChi,setDiaChi] = useState("123");
+  const [mail,setMail] = useState("");
+  const [cccd,setCccd] = useState("");
+  const [sdt,setSdt] = useState("");
+  const [diaChi,setDiaChi] = useState("");
   const [picture , setPicture] = useState("");
   const [image, setImage] = useState([]);
   const [btnLeft , setBtnLeft] = useState("");
