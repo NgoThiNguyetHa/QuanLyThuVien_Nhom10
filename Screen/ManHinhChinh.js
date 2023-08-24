@@ -44,7 +44,7 @@ export default function ManHinhChinh({ navigation }) {
           alignItems: 'center',
           flexDirection: 'row',
           backgroundColor: '#fff'
-        }}>
+        }} onPress={() => { navigation.navigate('Doanh thu') }}>
           <Image style={{ width: 120, height: 120 }} source={require('../assets/img_thongKe.png')} />
           <Text style={{ fontWeight: 'bold', marginLeft: 20 }}>Thống kê doanh thu</Text>
         </TouchableOpacity>

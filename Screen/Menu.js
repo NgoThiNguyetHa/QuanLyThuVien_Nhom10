@@ -8,6 +8,7 @@ import LoaiSachScreen from './LoaiSachScreen';
 import ThanhVienScreen from './ThanhVienScreen';
 import ThemNguoiDungScreen from './ThemNguoiDungScreen';
 import PhieuMuonScreen from './PhieuMuonScreen';
+import DoanhThuScreen from './DoanhThuScreen';
 
 const drawer = createDrawerNavigator();
 
@@ -23,6 +24,7 @@ export default function Menu() {
         <drawer.Screen name='Quản lý sách' component={SachScreen} />
         <drawer.Screen name='Quản lý thành viên' component={ThanhVienScreen} />
         <drawer.Screen name='Thêm người dùng' component={ThemNguoiDungScreen} />
+        <drawer.Screen name='Doanh thu' component={DoanhThuScreen} />
       </drawer.Navigator>
     
 
