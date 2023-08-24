@@ -97,6 +97,11 @@ app.post('/insertThanhVien' , (req,res) => {
   const thanhvien = new ThanhVien({
     name: req.body.name,
     namSinh:req.body.namSinh,
+    mail: req.body.mail,
+    cccd: req.body.cccd,
+    sdt: req.body.sdt,
+    diaChi: req.body.diaChi,
+    image: req.body.image
   })
   thanhvien.save()
   .then(data => {
@@ -304,6 +309,7 @@ app.put('/updateSach/:id', async (req,res) => {
   }
 })
 
+
 //----------------server phiếu mượn---------------//
 app.post('/insertPhieuMuon', (req,res) => {
   const phieuMuon = new PhieuMuon({
@@ -366,6 +372,31 @@ app.put('/updatePhieuMuon/:id', async (req,res) => {
     return res.status(500).json({message: err.message})
   }
 })
+
+//----------------server thống kê---------------//
+//lấy danh sách theo khoảng ngày
+app.get('/doanhThu', async (req, res) => {
+  try {
+      const startDate = req.query.startDate;
+      const endDate = req.query.endDate;
+
+      const revenueData = await PhieuMuon.find({
+        ngayMuon: { $gte: startDate, $lte: endDate }
+      }).populate('maThanhVien')   // maThanhVien là thuộc tính của PhieuMuon
+      .populate('maThuThu')   // maThuThu là thuộc tính của PhieuMuon
+      .populate('maSach')   // maSach là thuộc tính của PhieuMuon
+      .populate('tienThue');   // tienThue là thuộc tính của PhieuMuon; ;
+      
+      // Tính tổng doanh thu
+  const totalRevenue = revenueData.reduce((tongDoanhThu, phieuMuon) => tongDoanhThu + phieuMuon.maSach.giaThue, 0);
+
+  // res.json({ books: revenueData, totalRevenue });
+      res.json(revenueData);
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Internal server error' });
+  }
+});
 
 
 // app.listen(3000, "192.168.1.135"); // e.g. app.listen(3000, "192.183.190.3");

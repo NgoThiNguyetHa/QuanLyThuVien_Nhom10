@@ -168,7 +168,7 @@ export default function LoaiSachScreen() {
         style={{ flex: 0.9, width: "85%" }}
         // contentContainerStyle = {{justifyContent:'center', alignItems:"center"}}
         contentContainerStyle={{ flexGrow: 1, justifyContent: 'space-evenly', }}
-        // bài của tôi react native đroi bài 
+         
         data={listLoaiSach}
         numColumns={2}
         keyExtractor={(item, index) => item._id}
@@ -196,17 +196,17 @@ export default function LoaiSachScreen() {
                 alignItems: "center",
                 backgroundColor: "#FAFAFA",
                 elevation: 5,
-                width: "100%",
+                
                 
 
-                // justifyContent:"center",
+                justifyContent:"center",
                 // flex: 1,
                 // flexDirection: 'column',
                 // margin: 1
 
               }}
             >
-              <View style={{ flexDirection: "column", alignItems: "center", justifyContent: "center", padding: 5 }}>
+              <View style={{ flexDirection: "column", alignItems: "center", justifyContent: "center", padding: 5, margin:4 }}>
                 <Image source={{ uri: item.image }} style={{ width: 100, height: 100, borderRadius: 10, margin: 10 }} />
                 <Text style={{ textAlign: "center", alignSelf: "center", fontWeight: "bold" }}> {item.tenLoaiSach}</Text>
 

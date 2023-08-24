@@ -45,11 +45,17 @@ export default function PhieuMuonScreen() {
   const [modalVisible, setModalVisible] = useState(false);
   const [loading, setLoading] = useState(true);
 
+
+
   //mới
   const [btnLeft, setBtnLeft] = useState("");
   const [btnRight, setBtnRight] = useState("");
   //insert dữ liệu
   const insertPhieuMuon = () => {
+    //  getSachById(selectedSach);
+    //  console.log(sachById);
+
+    // console.log(sachById.giaThue);
     handleReturnBook();
     const phieuMuon = {
       maThanhVien: selectedTV,
@@ -75,7 +81,7 @@ export default function PhieuMuonScreen() {
     setSelectedTV("")
     setSelectedSach("")
     setSelectedThuThu("")
-    console.log(phieuMuon);
+    console.log(selectedSach);
   };
   //lấy dữ liệu
   const getListPhieuMuon = () => {
@@ -174,6 +180,8 @@ export default function PhieuMuonScreen() {
       .catch(error => console.log('error', error));
   }
 
+  
+
 
   //update api phieuMuon
   const updatePhieuMuon = () => {
@@ -183,7 +191,7 @@ export default function PhieuMuonScreen() {
       maThuThu: selectedThuThu,
       maSach: selectedSach,
       ngayMuon: ngayMuon,
-      tienThue: tienThue,
+      tienThue: selectedSach,
       traSach: traSach,
     };
     fetch(`http://192.168.126.1:3000/updatePhieuMuon/${_id}`, {
@@ -302,7 +310,7 @@ export default function PhieuMuonScreen() {
                   <Text>Thủ thư: {item.maThuThu.hoTen}</Text>
                   <Text>Sách: {item.maSach.tenSach}</Text>
                   <Text>Ngày mượn: {item.ngayMuon}</Text>
-                  <Text>Giá thuê: {item.maSach.giaThue}</Text>
+                  <Text>Giá thuê: {item.tienThue.giaThue}</Text>
                   <Text
                     style={item.traSach == 'Yes' ? styles.chuaTraSach : styles.daTraSach}
                   >{item.traSach == 'Yes' ? 'Đã trả sách' : 'Chưa trả sách'}</Text>
@@ -388,6 +396,7 @@ export default function PhieuMuonScreen() {
               style={styles.inputStyle}
               value={formattedDate}
             >{formattedDate}</Text>
+           
 
             <View style={{ flex: 1 }}>
               {/* <Checkbox

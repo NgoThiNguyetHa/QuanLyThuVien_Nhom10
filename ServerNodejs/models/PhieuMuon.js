@@ -14,8 +14,8 @@ const PhieuMuonSchema = new mongoose.Schema({
         type:String
     },
     tienThue:{
-        // type: mongoose.Schema.Types.ObjectId, ref: 'sach'
-        type:String
+        type: mongoose.Schema.Types.ObjectId, ref: 'sach'
+        // type:String
     },
     traSach:{
         type:String

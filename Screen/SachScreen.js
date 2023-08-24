@@ -72,6 +72,7 @@ export default function SachScreen() {
       if (res) {
         setListSach(res)
         setLoading(false);
+        
       }
     }).catch(err => {
       console.log(err)
