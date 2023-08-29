@@ -12,7 +12,7 @@ export default function ThemNguoiDungScreen() {
   const [dsnd, setdsnd] = useState([]);
   //set dialog 
   const [modalVisible, setModalVisible] = useState(false);
-  
+  const hostname = '192.168.1.2';
   //get dữ liệu lên flatlist
   useEffect (() => {
     // getListNguoiDung();
@@ -58,19 +58,23 @@ export default function ThemNguoiDungScreen() {
       password: password,
       rePassword: rePassword,
     };
-    fetch('http://192.168.126.1:3000/insertNguoiDung', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(allInputValue),
-    })
-    Alert.alert("Them thanh cong");
-    setUsername("");
-    setHoTen("")
-    setPassword("")
-    setRePassword("")
-    console.log(allInputValue);
+    if (rePassword !== password) {
+      alert("Password không trùng khớp");
+    } else {
+      fetch(`http://${hostname}:3000/insertNguoiDung`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(allInputValue),
+      });
+      Alert.alert("Them thanh cong");
+      setUsername("");
+      setHoTen("");
+      setPassword("");
+      setRePassword("");
+      console.log(allInputValue);
+    }
   };
 
 
@@ -78,7 +82,9 @@ export default function ThemNguoiDungScreen() {
     <View style={styles.container}>
       <Image
         style={styles.stretch}
-        source = {require('../assets/img_ThemNguoiDung.png')}
+        source={{
+          uri: 'https://o.remove.bg/downloads/bd65cd6c-b2cd-4cb8-a5d4-ff2e812bdb80/8955234-removebg-preview.png',
+        }}
       />
       <View style={styles.sectionStyle}>
         {/* tên đăng nhập */}
@@ -90,6 +96,7 @@ export default function ThemNguoiDungScreen() {
         />
         <TextInput
           placeholder="Nhập username"
+          value={username}
           onChangeText={(newText) => setUsername(newText)}
           style={{
             flex: 1,
@@ -113,6 +120,7 @@ export default function ThemNguoiDungScreen() {
         />
         <TextInput
           placeholder="Nhập họ tên"
+          value={hoTen}
           onChangeText={(newText) => setHoTen(newText)}
           style={{ flex: 1, borderColor: "#fff", padding: 10 }}
           underlineColorAndroid="transparent"
@@ -128,7 +136,8 @@ export default function ThemNguoiDungScreen() {
           style={styles.imageStyle}
         />
         <TextInput
-          placeholder="Nhập password"
+          placeholder="Nhập mật khẩu"
+          value={password}
           onChangeText={(newText) => setPassword(newText)}
           style={{ flex: 1, borderColor: "#fff", padding: 10 }}
           underlineColorAndroid="transparent"
@@ -145,6 +154,7 @@ export default function ThemNguoiDungScreen() {
         />
         <TextInput
           placeholder="Nhập lại mật khẩu"
+          value={rePassword}
           onChangeText={(newText) => setRePassword(newText)}
           style={{ flex: 1, borderColor: "#fff", padding: 10 }}
           underlineColorAndroid="transparent"
@@ -163,7 +173,7 @@ export default function ThemNguoiDungScreen() {
           style={{
             borderWidth: 0.5,
             padding: 7,
-            backgroundColor: "#009ACD",
+           backgroundColor: "#009ACD",
             borderRadius: 5,
             margin: 15,
             borderColor: "white",
@@ -181,6 +191,12 @@ export default function ThemNguoiDungScreen() {
             borderColor: "white",
             margin: 15,
           }}
+          onPress={() => {
+            setUsername("");
+            setHoTen("");
+            setPassword("");
+            setRePassword("");
+          }}
         >
           <Text style={{ color: "white" }}>Cancel</Text>
         </TouchableOpacity>
@@ -195,7 +211,7 @@ export default function ThemNguoiDungScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#B0E2FF",
+   backgroundColor: '#B0E2FF',
     alignItems: "center",
     padding:15
   },
