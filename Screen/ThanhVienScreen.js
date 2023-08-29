@@ -4,7 +4,7 @@ import { StyleSheet,Text, TextInput, View, Image , TouchableOpacity  , FlatList 
 Alert} from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 export default function ThanhVienScreen() {
-  const hostname = '192.168.126.1';
+  const hostname = '192.168.1.4';
   const [_id,setId] = useState();
   const [name,setName] = useState("");
   const [namSinh,setNamSinh] = useState("");
@@ -22,6 +22,29 @@ export default function ThanhVienScreen() {
   const [modalVisible, setModalVisible] = useState(false);
   const [loading, setLoading] = useState(true);
   
+
+  //searchview flatlist
+  //mới
+
+  const [search,setSearch] = useState("");
+  const [oldListTV,setOldListTV] = useState([]);
+
+  const onSearch = (text) => {
+    if(text == ''){
+      setListThanhVien(oldListTV)
+    }else{
+    const tempList = listThanhVien.filter(item => {
+      return  item.name.toLowerCase().indexOf(text.toLowerCase()) > -1 
+      || item.namSinh.toLowerCase().indexOf(text.toLowerCase()) > -1
+      || item.mail.toLowerCase().indexOf(text.toLowerCase()) > -1
+      || item.cccd.toLowerCase().indexOf(text.toLowerCase()) > -1
+      || item.sdt.toLowerCase().indexOf(text.toLowerCase()) > -1
+       ;
+    });
+    setListThanhVien(tempList)
+  }
+  };
+
   //click image
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -45,6 +68,8 @@ export default function ThanhVienScreen() {
   };
   //insert dữ liệu
   const handleSubmit = (name , namSinh , mail , cccd , sdt , diaChi ) => {
+    const phoneRegex = /^(09|03)\d{8}$/;
+    const emailRegex = /^[\w\.-]+@gmail\.com$/;
     const allInputValue = {
       name:name,
       namSinh:namSinh,
@@ -55,14 +80,75 @@ export default function ThanhVienScreen() {
       diaChi : diaChi,
       image: picture,
     };
-    fetch(`http://${hostname}:3000/insertThanhVien`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(allInputValue),
-    })
-  
+    //check trống ô nhập
+    if (name.length == 0) {
+    Alert.alert("Thông báo" , "Tên thành viên không được để trống")
+      return;
+    }
+
+    if (namSinh.length == 0) {
+    Alert.alert("Thông báo" , "Năm sinh không được để trống")
+      return;
+    }
+    if (isNaN(parseInt(namSinh ))) {
+    Alert.alert("Thông báo" , "Năm sinh yêu cầu nhập phải là số")
+      return;
+    }
+    if (mail.length == 0) {
+    Alert.alert("Thông báo" , "Email không được để trống")
+      return;
+    }
+    if (!emailRegex.test(mail)) {
+    Alert.alert("Thông báo" , "Email phải đúng định dạng @gmail.com ")
+      return;
+    }
+    if (cccd.length == 0) {
+    Alert.alert("Thông báo" , "CCCD không được để trống")
+      return;
+    }
+    if (sdt.length == 0) {
+    Alert.alert("Thông báo" , "Số điện thoại không được để trống")
+      return;
+    }
+    if (!phoneRegex.test(sdt)) {
+    Alert.alert("Thông báo" , "Số điện thoại không đúng định dạng - (09********) 10 số ")
+      return;
+    }
+    if (diaChi.length == 0) {
+    Alert.alert("Thông báo" , "Địa chỉ không được để trống")
+      return;
+    }
+    if (image.length == 0) {
+    Alert.alert("Thông báo" , "Yêu cầu chọn ảnh")
+      return;
+    }
+    
+    
+    
+    var myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    var requestOptions = {
+      method: 'POST',
+      headers: myHeaders,
+      body: JSON.stringify(allInputValue),
+    };
+
+    fetch(`http://${hostname}:3000/insertThanhVien`, requestOptions)
+      .then(response => response.json())
+      .then(result => console.log(result))
+      .catch(error => console.log('error', error));
+
+
+    // fetch(`http://${hostname}:3000/insertThanhVien`, {
+      
+    // method: 'POST',
+    // headers: {
+    //   'Content-Type': 'application/json',
+    // },
+    // // const book = await Sach.find(),
+    // // const user = result.find((user) => user.username === username);
+    // body: JSON.stringify(allInputValue),
+    // })
     setModalVisible(!modalVisible)
     getListThanhVien();
     Alert.alert("Them thanh cong");
@@ -77,6 +163,8 @@ export default function ThanhVienScreen() {
     setBtnLeft("")
     setBtnRight("")
     console.log(allInputValue);
+
+   
   };
   //lấy dữ liệu
   const getListThanhVien = () => {
@@ -87,6 +175,7 @@ export default function ThanhVienScreen() {
   }).then(res => {
     if(res){
       setListThanhVien(res)
+      setOldListTV(res);
       setLoading(false);
     }
   }).catch(err => {
@@ -139,6 +228,49 @@ export default function ThanhVienScreen() {
       diaChi : diaChi,
       image: picture,
     };
+
+    //check trống ô nhập
+    if (name.length == 0) {
+    Alert.alert("Thông báo" , "Tên thành viên không được để trống")
+      return;
+    }
+
+    if (namSinh.length == 0) {
+    Alert.alert("Thông báo" , "Năm sinh không được để trống")
+      return;
+    }
+    if (isNaN(parseInt(namSinh ))) {
+    Alert.alert("Thông báo" , "Năm sinh yêu cầu nhập phải là số")
+      return;
+    }
+    if (mail.length == 0) {
+    Alert.alert("Thông báo" , "Email không được để trống")
+      return;
+    }
+    if (!emailRegex.test(mail)) {
+    Alert.alert("Thông báo" , "Email phải đúng định dạng @gmail.com ")
+      return;
+    }
+    if (cccd.length == 0) {
+    Alert.alert("Thông báo" , "CCCD không được để trống")
+      return;
+    }
+    if (sdt.length == 0) {
+    Alert.alert("Thông báo" , "Số điện thoại không được để trống")
+      return;
+    }
+    if (!phoneRegex.test(sdt)) {
+    Alert.alert("Thông báo" , "Số điện thoại không đúng định dạng - (09********) 10 số ")
+      return;
+    }
+    if (diaChi.length == 0) {
+    Alert.alert("Thông báo" , "Địa chỉ không được để trống")
+      return;
+    }
+    if (image.length == 0) {
+    Alert.alert("Thông báo" , "Yêu cầu chọn ảnh")
+      return;
+    }
      fetch(`http://${hostname}:3000/updateThanhVien/${_id}`, {
        method: "PUT",
        headers: {
@@ -197,7 +329,23 @@ export default function ThanhVienScreen() {
           placeholder="Search..."
           underlineColorAndroid="transparent"
           mode="outlined"
+          value={search}
+          onChangeText={text => {
+            onSearch(text);
+            setSearch(text);
+          }}
         />
+        {search == '' ? null :(
+        <TouchableOpacity
+        style={{marginRight:15}}
+        onPress={() => {
+          
+          setSearch("");
+        }}
+        >
+          <Text>X</Text>
+        </TouchableOpacity>
+      )}
       </View>
       {/* flat list - danh sách thành viên*/}
         <FlatList
@@ -289,6 +437,7 @@ export default function ThanhVienScreen() {
             <TextInput
               style={styles.inputStyle}
               value={namSinh}
+              keyboardType="numeric"
               mode="outlined"
               placeholder="Nhập năm sinh"
               onChangeText={(text) => setNamSinh(text)}
@@ -313,6 +462,7 @@ export default function ThanhVienScreen() {
             <TextInput
               style={styles.inputStyle}
               value={sdt}
+              
               mode="outlined"
               placeholder="Nhập số điện thoại"
               onChangeText={(text) => setSdt(text)}

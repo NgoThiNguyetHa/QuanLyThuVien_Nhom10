@@ -34,8 +34,29 @@ export default function SachScreen() {
   const [btnLeft, setBtnLeft] = useState("");
   const [btnRight, setBtnRight] = useState("");
 
+  //searchview flatlist
+  //mới
+  const hostname = "192.168.1.4";
+  const [search,setSearch] = useState("");
+  const [oldListSach,setOldListSach] = useState([]);
+
+  const onSearch = (text) => {
+    if(text == ''){
+      setListSach(oldListSach)
+    }else{
+    const tempList = listSach.filter(item => {
+      return item.tenSach.toLowerCase().indexOf(text.toLowerCase()) > -1 
+      || item.tacGia.toLowerCase().indexOf(text.toLowerCase()) > -1 
+      || item.namXuatBan.toLowerCase().indexOf(text.toLowerCase()) > -1
+      || item.giaThue.toLowerCase().indexOf(text.toLowerCase()) > -1 ;
+    });
+    setListSach(tempList)
+  }
+  };
+
   //insert dữ liệu
   const insertSach = () => {
+    
     const sach = {
       tenSach: tenSach,
       giaThue: giaThue,
@@ -44,7 +65,39 @@ export default function SachScreen() {
       namXuatBan: namXuatBan,
       image: picutre
     };
-    fetch('http://192.168.126.1:3000/insertSach', {
+    if (tenSach.length == 0) {
+    Alert.alert("Thông báo" , "Tên sách không được để trống")
+      return;
+    }
+    if (giaThue.length == 0) {
+    Alert.alert("Thông báo" , "Giá thuê không được để trống")
+      return;
+    }
+    if (tacGia.length == 0) {
+    Alert.alert("Thông báo" , "Tác giả không được để trống")
+      return;
+    }
+    if (namXuatBan.length == 0) {
+    Alert.alert("Thông báo" , "Năm suất bản không được để trống")
+      return;
+    }
+    if (maLoaiSach == null) {
+    Alert.alert("Thông báo" , "Mã loại sách bản không được để trống")
+      return;
+    }
+    if(selectedLoai === ''){
+      Alert.alert("Thông báo" , "Tên loại sách không được để trống")
+      return;
+    }
+    if(selectedLoai === null){
+      Alert.alert("Thông báo" , "Tên loại sách không được để trống")
+      return;
+    }
+    if (image.length == 0) {
+    Alert.alert("Thông báo" , "Yêu cầu chọn ảnh")
+      return;
+    }
+    fetch(`http://${hostname}:3000/insertSach`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -59,11 +112,13 @@ export default function SachScreen() {
     setTacGia("");
     setNamXuatBan("");
     setImage([]);
+    setSelectedLoai(null);
+    
     console.log(sach);
   };
   //lấy dữ liệu
   const getListSach = () => {
-    fetch("http://192.168.126.1:3000/getSach", {
+    fetch(`http://${hostname}:3000/getSach`, {
       method: "GET",
       redirect: 'follow'
     }).then(res => {
@@ -71,8 +126,8 @@ export default function SachScreen() {
     }).then(res => {
       if (res) {
         setListSach(res)
+        setOldListSach(res)
         setLoading(false);
-        
       }
     }).catch(err => {
       console.log(err)
@@ -86,7 +141,7 @@ export default function SachScreen() {
 
   //delete dữ liệu thanh vien
   const deleteSach = (_id) => {
-    fetch(`http://192.168.126.1:3000/deleteSach/${_id}`, {
+    fetch(`http://${hostname}:3000/deleteSach/${_id}`, {
       method: "DELETE",
       headers: {
         'Accept': "application/json",
@@ -112,7 +167,7 @@ export default function SachScreen() {
       redirect: 'follow'
     };
 
-    fetch("http://192.168.126.1:3000/getLoaiSach", requestOptions)
+    fetch(`http://${hostname}:3000/getLoaiSach`, requestOptions)
       .then(response => response.json())
       .then(response => {
         if (response) {
@@ -137,7 +192,40 @@ export default function SachScreen() {
 
 
     };
-    fetch(`http://192.168.126.1:3000/updateSach/${_id}`, {
+
+    if (tenSach.length == 0) {
+    Alert.alert("Thông báo" , "Tên sách không được để trống")
+      return;
+    }
+    if (giaThue.length == 0) {
+    Alert.alert("Thông báo" , "Giá thuê không được để trống")
+      return;
+    }
+    if (tacGia.length == 0) {
+    Alert.alert("Thông báo" , "Tác giả không được để trống")
+      return;
+    }
+    if (namXuatBan.length == 0) {
+    Alert.alert("Thông báo" , "Năm suất bản không được để trống")
+      return;
+    }
+    if (maLoaiSach == null) {
+    Alert.alert("Thông báo" , "Mã loại sách bản không được để trống")
+      return;
+    }
+    if(selectedLoai === ''){
+      Alert.alert("Thông báo" , "Tên loại sách không được để trống")
+      return;
+    }
+    if(selectedLoai === null){
+      Alert.alert("Thông báo" , "Tên loại sách không được để trống")
+      return;
+    }
+    if (image.length == 0) {
+    Alert.alert("Thông báo" , "Yêu cầu chọn ảnh")
+      return;
+    }
+    fetch(`http://${hostname}:3000/updateSach/${_id}`, {
       method: "PUT",
       headers: {
         'Accept': "application/json",
@@ -158,6 +246,7 @@ export default function SachScreen() {
         setNamXuatBan("");
         setTacGia("");
         setImage([]);
+        setSelectedLoai(null);
       })
       .catch((err) => {
         console.log(err);
@@ -215,7 +304,23 @@ export default function SachScreen() {
           placeholder="Search..."
           underlineColorAndroid="transparent"
           mode="outlined"
+          value={search}
+          onChangeText={text => {
+            onSearch(text);
+            setSearch(text);
+          }}
         />
+        {search == '' ? null :(
+        <TouchableOpacity
+        style={{marginRight:15}}
+        onPress={() => {
+          
+          setSearch("");
+        }}
+        >
+          <Text>X</Text>
+        </TouchableOpacity>
+      )}
       </View>
       {/* flat list - danh sách thành viên*/}
       <FlatList

@@ -7,7 +7,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 export default function Login(props) {
   const [username, setusername] = useState("");
   const [passwd, setpasswd] = useState("");
-
+  const hostname = '192.168.1.6';
   const doLogin = () => {
     if (username.length == 0) {
       alert("Chưa nhập username");
@@ -44,7 +44,7 @@ export default function Login(props) {
     //       }
     //     })
 
-    fetch("http://192.168.126.1:3000/getNguoiDung")
+    fetch(`http://${hostname}:3000/getNguoiDung`)
       .then((response) => response.json())
       .then(async (result) => {
         // tìm user
@@ -60,7 +60,7 @@ export default function Login(props) {
           console.log("Thành công")
           // viết chuyển màn hình ở đây nhé bro
           await AsyncStorage.setItem('loginInfo', JSON.stringify(user));
-          props.navigation.navigate('Menu');
+          props.navigation.navigate('Menu',{user});
         }
       })
       .catch((error) => console.log("error", error));

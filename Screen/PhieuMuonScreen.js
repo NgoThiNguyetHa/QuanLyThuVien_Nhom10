@@ -50,6 +50,28 @@ export default function PhieuMuonScreen() {
   //mới
   const [btnLeft, setBtnLeft] = useState("");
   const [btnRight, setBtnRight] = useState("");
+  //searchview flatlist
+  //mới
+  const hostname = "192.168.1.4";
+  const [search,setSearch] = useState("");
+  const [oldListPM,setOldPM] = useState([]);
+
+  const onSearch = (text) => {
+    if(text == ''){
+      setListPhieuMuon(oldListPM)
+    }else{
+    const tempList = listPhieuMuon.filter(item => {
+      return item.maThanhVien.name.toLowerCase().indexOf(text.toLowerCase()) > -1 
+      || item.maThuThu.hoTen.toLowerCase().indexOf(text.toLowerCase()) > -1 
+      || item.maSach.giaThue.toLowerCase().indexOf(text.toLowerCase()) > -1
+      || item.maSach.tenSach.toLowerCase().indexOf(text.toLowerCase()) > -1
+      || item.ngayMuon.toLowerCase().indexOf(text.toLowerCase()) > -1
+      || item.traSach.toLowerCase().indexOf(text.toLowerCase()) > -1
+       ;
+    });
+    setListPhieuMuon(tempList)
+  }
+  };
   //insert dữ liệu
   const insertPhieuMuon = () => {
     //  getSachById(selectedSach);
@@ -65,7 +87,33 @@ export default function PhieuMuonScreen() {
       tienThue: selectedSach,
       traSach: traSach
     };
-    fetch('http://192.168.126.1:3000/insertPhieuMuon', {
+    
+    if(selectedTV === ''){
+    Alert.alert("Thông báo" , "Yêu cầu chọn tên thành viên")
+      return;
+    }
+    if(selectedTV === null){
+      Alert.alert("Thông báo" , "Yêu cầu chọn tên thành viên")
+      return;
+    }
+    if(selectedThuThu === ''){
+    Alert.alert("Thông báo" , "Yêu cầu chọn tên thủ thư")
+      return;
+    }
+    if(selectedThuThu === null){
+      Alert.alert("Thông báo" , "Yêu cầu chọn tên thủ thư")
+      return;
+    }
+    if(selectedSach === ''){
+    Alert.alert("Thông báo" , "Yêu cầu chọn tên sách")
+      return;
+    }
+    if(selectedSach === null){
+      Alert.alert("Thông báo" , "Yêu cầu chọn tên sách")
+      return;
+    }
+    
+    fetch(`http://${hostname}:3000/insertPhieuMuon`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -81,11 +129,14 @@ export default function PhieuMuonScreen() {
     setSelectedTV("")
     setSelectedSach("")
     setSelectedThuThu("")
+    setSelectedTV(null);
+    setSelectedThuThu(null);
+    setSelectedSach(null);
     console.log(selectedSach);
   };
   //lấy dữ liệu
   const getListPhieuMuon = () => {
-    fetch("http://192.168.126.1:3000/getPhieuMuon", {
+    fetch(`http://${hostname}:3000/getPhieuMuon`, {
       method: "GET",
       redirect: 'follow'
     }).then(res => {
@@ -93,6 +144,7 @@ export default function PhieuMuonScreen() {
     }).then(res => {
       if (res) {
         setListPhieuMuon(res)
+        setOldPM(res)
         setLoading(false);
       }
     }).catch(err => {
@@ -109,7 +161,7 @@ export default function PhieuMuonScreen() {
 
   //delete dữ liệu thanh vien
   const deletePhieuMuon = (_id) => {
-    fetch(`http://192.168.126.1:3000/deletePhieuMuon/${_id}`, {
+    fetch(`http://${hostname}:3000/deletePhieuMuon/${_id}`, {
       method: "DELETE",
       headers: {
         'Accept': "application/json",
@@ -135,7 +187,7 @@ export default function PhieuMuonScreen() {
       redirect: 'follow'
     };
 
-    fetch("http://192.168.126.1:3000/getThanhVien", requestOptions)
+    fetch(`http://${hostname}:3000/getThanhVien`, requestOptions)
       .then(response => response.json())
       .then(response => {
         if (response) {
@@ -152,7 +204,7 @@ export default function PhieuMuonScreen() {
       redirect: 'follow'
     };
 
-    fetch("http://192.168.126.1:3000/getNguoiDung", requestOptions)
+    fetch(`http://${hostname}:3000/getNguoiDung`, requestOptions)
       .then(response => response.json())
       .then(response => {
         if (response) {
@@ -169,7 +221,7 @@ export default function PhieuMuonScreen() {
       redirect: 'follow'
     };
 
-    fetch("http://192.168.126.1:3000/getSach", requestOptions)
+    fetch(`http://${hostname}:3000/getSach`, requestOptions)
       .then(response => response.json())
       .then(response => {
         if (response) {
@@ -194,7 +246,31 @@ export default function PhieuMuonScreen() {
       tienThue: selectedSach,
       traSach: traSach,
     };
-    fetch(`http://192.168.126.1:3000/updatePhieuMuon/${_id}`, {
+    if(selectedTV === ''){
+    Alert.alert("Thông báo" , "Yêu cầu chọn tên thành viên")
+      return;
+    }
+    if(selectedTV === null){
+      Alert.alert("Thông báo" , "Yêu cầu chọn tên thành viên")
+      return;
+    }
+    if(selectedThuThu === ''){
+    Alert.alert("Thông báo" , "Yêu cầu chọn tên thủ thư")
+      return;
+    }
+    if(selectedThuThu === null){
+      Alert.alert("Thông báo" , "Yêu cầu chọn tên thủ thư")
+      return;
+    }
+    if(selectedSach === ''){
+    Alert.alert("Thông báo" , "Yêu cầu chọn tên sách")
+      return;
+    }
+    if(selectedSach === null){
+      Alert.alert("Thông báo" , "Yêu cầu chọn tên sách")
+      return;
+    }
+    fetch(`http://${hostname}:3000/updatePhieuMuon/${_id}`, {
       method: "PUT",
       headers: {
         'Accept': "application/json",
@@ -210,6 +286,9 @@ export default function PhieuMuonScreen() {
         getListPhieuMuon();
         setModalVisible(!modalVisible)
         setId(0);
+        setSelectedTV(null);
+        setSelectedThuThu(null);
+        setSelectedSach(null);
       })
       .catch((err) => {
         console.log(err);
@@ -245,7 +324,7 @@ export default function PhieuMuonScreen() {
     console.log(traSach)
   };
 
-
+  
   return (
     <View style={styles.container}>
       <View style={styles.sectionStyle}>
@@ -262,7 +341,23 @@ export default function PhieuMuonScreen() {
           placeholder="Search..."
           underlineColorAndroid="transparent"
           mode="outlined"
+          value={search}
+          onChangeText={text => {
+            onSearch(text);
+            setSearch(text);
+          }}
         />
+        {search == '' ? null :(
+        <TouchableOpacity
+        style={{marginRight:15}}
+        onPress={() => {
+          
+          setSearch("");
+        }}
+        >
+          <Text>X</Text>
+        </TouchableOpacity>
+      )}
       </View>
       {/* flat list - danh sách thành viên*/}
       <FlatList

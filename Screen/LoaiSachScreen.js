@@ -7,6 +7,9 @@ import {
 import * as ImagePicker from 'expo-image-picker';
 
 export default function LoaiSachScreen() {
+  //long
+  const hostname = "192.168.1.4";
+  //=====//
   const [_id, setId] = useState();
   const [tenLoaiSach, setTenLoaiSach] = useState();
   const [listLoaiSach, setListLoaiSach] = useState();
@@ -22,6 +25,20 @@ export default function LoaiSachScreen() {
   const [btnLeft, setBtnLeft] = useState("");
   const [btnRight, setBtnRight] = useState("");
 
+  //search view
+  const [search,setSearch] = useState("");
+  const [oldListLoaiSach,setOldListLoaiSach] = useState([]);
+
+  const onSearch = (text) => {
+    if(text == ''){
+      setListLoaiSach(oldListLoaiSach)
+    }else{
+    const tempList = listLoaiSach.filter(item => {
+      return item.tenLoaiSach.toLowerCase().indexOf(text.toLowerCase()) > -1 ; 
+    });
+    setListLoaiSach(tempList)
+  }
+  };
   //click image
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -44,21 +61,29 @@ export default function LoaiSachScreen() {
     }
   };
 
-  const insertLoaiSach = () => {
-    var myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
+  const insertLoaiSach = (tenLoaiSach) => {
     const loaiSach = {
       tenLoaiSach: tenLoaiSach,
       image: picture
     }
-
+    if (tenLoaiSach.length == 0) {
+    Alert.alert("Thông báo" , "Tên loại sách không được để trống")
+      return;
+    }
+    if (image.length == 0) {
+    Alert.alert("Thông báo" , "Yêu cầu chọn ảnh")
+      return;
+    }
+    var myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+  
     var requestOptions = {
       method: 'POST',
       headers: myHeaders,
       body: JSON.stringify(loaiSach),
     };
 
-    fetch("http://192.168.126.1:3000/insertLoaiSach", requestOptions)
+    fetch(`http://${hostname}:3000/insertLoaiSach`, requestOptions)
       .then(response => response.json())
       .then(result => console.log(result))
       .catch(error => console.log('error', error));
@@ -78,7 +103,7 @@ export default function LoaiSachScreen() {
       redirect: 'follow'
     };
 
-    fetch(`http://192.168.126.1:3000/deleteLoaiSach/${_id}`, requestOptions)
+    fetch(`http://${hostname}:3000/deleteLoaiSach/${_id}`, requestOptions)
       .then(response => response.json())
       .then(response => {
         console.log(response);
@@ -92,6 +117,14 @@ export default function LoaiSachScreen() {
       tenLoaiSach: tenLoaiSach,
       image: picutre
     }
+    if (tenLoaiSach.length == 0) {
+    Alert.alert("Thông báo" , "Tên loại sách không được để trống")
+      return;
+    }
+    if (image.length == 0) {
+    Alert.alert("Thông báo" , "Yêu cầu chọn ảnh")
+      return;
+    }
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
 
@@ -102,7 +135,7 @@ export default function LoaiSachScreen() {
       redirect: 'follow'
     };
 
-    fetch(`http://192.168.126.1:3000/updateLoaiSach/${_id}`, requestOptions)
+    fetch(`http://${hostname}:3000/updateLoaiSach/${_id}`, requestOptions)
       .then(response => response.json())
       .then(response => {
         console.log(response);
@@ -121,11 +154,12 @@ export default function LoaiSachScreen() {
       redirect: 'follow'
     };
 
-    fetch("http://192.168.126.1:3000/getLoaiSach", requestOptions)
+    fetch(`http://${hostname}:3000/getLoaiSach`, requestOptions)
       .then(response => response.json())
       .then(response => {
         if (response) {
           setListLoaiSach(response)
+          setOldListLoaiSach(response)
           setLoading(false)
         }
       })
@@ -134,6 +168,7 @@ export default function LoaiSachScreen() {
 
   useEffect(() => {
     getListLoaiSach()
+    
   }, [])
 
   const edit = (id, tenLoaiSach, image) => {
@@ -160,7 +195,22 @@ export default function LoaiSachScreen() {
           placeholder="Search..."
           underlineColorAndroid="transparent"
           mode="outlined"
+          value={search}
+          onChangeText={text => {
+            onSearch(text);
+            setSearch(text);
+          }}
         />
+        {search == '' ? null :(
+        <TouchableOpacity
+        style={{marginRight:15}}
+        onPress={() => {
+          setSearch("");
+        }}
+        >
+          <Text>X</Text>
+        </TouchableOpacity>
+      )}
       </View>
       {/* flat list - danh sách thành viên*/}
 
@@ -290,7 +340,7 @@ export default function LoaiSachScreen() {
                   if (_id && tenLoaiSach) { // nếu _id , name , namSinh == true trùng với dữ liệu th
                     updateLoaiSach(_id, tenLoaiSach, picture);
                   } else {
-                    insertLoaiSach();
+                    insertLoaiSach(tenLoaiSach);
                   }
                 }}
                 style={[styles.button, styles.buttonClose]}

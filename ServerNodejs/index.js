@@ -19,8 +19,8 @@ const PhieuMuon = mongoose.model("phieumuon");
 
 
 const port = 3000;
-// const hostname = '192.168.1.135'; //long
-const hostname = '192.168.126.1'; //hantnph28876
+const hostname = '192.168.1.6'; //long
+// const hostname = '192.168.126.1'; //hantnph28876
 app.use(bodyParser.json())
 
 const mongoURL= 'mongodb+srv://hoanglong180903:admin@atlascluster.311pkoc.mongodb.net/QuanLyThuVien'
@@ -151,17 +151,9 @@ app.delete("/deleteNguoiDung/:id",async (req,res) => {
 
 
 app.put("/updateNguoiDung/:id", async (req, res ) => {
-  // ThanhVien.findByIdAndUpdate(req.body.id , {
-  //   name: req.body.name,
-  //   namSinh:req.body.namSinh,
-  // }).then(data => {
-  //   console.log(data)
-  //   res.send(data)
-  // }).catch(err => {
-  //   console.log("error" , err)
-  // })
+
   try{
-    const data = await NguoiDung.findByIdAndUpdate(req.params.id , req.body.password , {new : true})
+    const data = await NguoiDung.findByIdAndUpdate(req.params.id,req.body , {new : true})
     if(!data){
       return res.status(404).json({
         message:"update failed"
@@ -176,7 +168,7 @@ app.put("/updateNguoiDung/:id", async (req, res ) => {
       message: error.message,
     })
   }
-})
+  })
 app.post('/insertNguoiDung' , (req,res) => {
   const nguoidung = new NguoiDung({
     username: req.body.username,
@@ -396,6 +388,47 @@ app.get('/doanhThu', async (req, res) => {
       console.error(error);
       res.status(500).json({ message: 'Internal server error' });
   }
+});
+
+// thống kê
+app.get('/top-10-books', async (req, res) => {
+  try {
+    const result = await PhieuMuon.aggregate([
+      {
+        $group: {
+          _id: '$maSach',
+          count: { $sum: 1 }
+        }
+      },
+      {
+        $lookup: {
+          from: 'saches', // Tên của bảng sách
+          localField: '_id',
+          foreignField: '_id',//khoa phu tu bang sach
+          as: 'sachInfo'
+        }
+      },
+      {
+        $project: {
+          _id: 1,
+          count: 1,
+          tenSach: { $arrayElemAt: ['$sachInfo.tenSach', 0] }
+        }
+      },
+      { $sort: { count: -1 } },
+      { $limit: 10 }
+    ]).then(results => {
+    results.forEach(result => {
+      idSachToCountMap[result._id] = result.totalBorrowCount;
+    });
+    console.log(idSachToCountMap);
+  });
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+
+
 });
 
 
