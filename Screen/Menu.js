@@ -9,22 +9,49 @@ import ThanhVienScreen from './ThanhVienScreen';
 import ThemNguoiDungScreen from './ThemNguoiDungScreen';
 import PhieuMuonScreen from './PhieuMuonScreen';
 import DoanhThuScreen from './DoanhThuScreen';
-
+import DoiMatKhau from './DoiMatKhauScreen'
+import ThongKe from './ThongKeTop10';
+import Login from './Login';
 const drawer = createDrawerNavigator();
 
-export default function Menu() {
+export default function Menu({route}) {
+  const user = route.params.user;
+  console.log(user.username);
+  function shouldHideSettings() {
+  // Logic kiểm tra trạng thái để quyết định ẩn hiện
+  // Trả về true để ẩn và false để hiện
+  if(user.username === "admin"){
+    return false; 
+  }
+  // Hoặc false tùy theo logic của bạn
+}
   return (
     
 
       <drawer.Navigator initialRouteName="ManHinhChinh" >
         {/* <Image/> */}
+        
         <drawer.Screen name='Trang chủ' component={ManHinhChinh} />
-        <drawer.Screen name='Quản lý phiếu mượn' component={PhieuMuonScreen} />
         <drawer.Screen name='Quản lý loại sách' component={LoaiSachScreen} />
         <drawer.Screen name='Quản lý sách' component={SachScreen} />
+        <drawer.Screen name='Quản lý phiếu mượn' component={PhieuMuonScreen} />
         <drawer.Screen name='Quản lý thành viên' component={ThanhVienScreen} />
-        <drawer.Screen name='Thêm người dùng' component={ThemNguoiDungScreen} />
         <drawer.Screen name='Doanh thu' component={DoanhThuScreen} />
+        <drawer.Screen name='Thống kê top 10' component={ThongKe} />
+        {/* <drawer.Screen name='Thêm người dùng' component={ThemNguoiDungScreen} 
+        options={{
+          drawerLabel: 'Thêm người dùng', // Nội dung của mục
+          drawerStyle: shouldHideSettings() ? { display: 'none' } : {}, // Kiểu dáng để ẩn
+        }}
+        /> */}
+        {user.username === 'admin' ? (
+        <drawer.Screen name='Thêm người dùng' component={ThemNguoiDungScreen} 
+        />
+        ) : null}
+        <drawer.Screen name='Đổi mật khẩu' component={DoiMatKhau}
+        initialParams={{ user }}/>
+        
+        
       </drawer.Navigator>
     
 
