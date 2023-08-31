@@ -19,7 +19,7 @@ const PhieuMuon = mongoose.model("phieumuon");
 
 
 const port = 3000;
-const hostname = '192.168.1.6'; //long
+const hostname = '192.168.1.7'; //long
 // const hostname = '192.168.126.1'; //hantnph28876
 app.use(bodyParser.json())
 
@@ -391,13 +391,26 @@ app.get('/doanhThu', async (req, res) => {
 });
 
 // thống kê
-app.get('/top-10-books', async (req, res) => {
+
+//top 10 theo tháng
+app.get('/top10WithMonth/', async (req, res) => {
+
   try {
-    const result = await PhieuMuon.aggregate([
+    const month = req.query.month;
+    const topSach = await PhieuMuon.aggregate([
+      {
+        $match: {
+          ngayMuon: {
+            // $regex: `${month}-2023`
+            // $regex: `08-2023`
+            $regex: month
+          }
+        }
+      },
       {
         $group: {
-          _id: '$maSach',
-          count: { $sum: 1 }
+          _id: "$maSach",
+          totalLuotMuon: { $sum: 1 }
         }
       },
       {
@@ -411,27 +424,44 @@ app.get('/top-10-books', async (req, res) => {
       {
         $project: {
           _id: 1,
-          count: 1,
+          totalLuotMuon: 1,
           tenSach: { $arrayElemAt: ['$sachInfo.tenSach', 0] }
         }
       },
-      { $sort: { count: -1 } },
-      { $limit: 10 }
-    ]).then(results => {
-    results.forEach(result => {
-      idSachToCountMap[result._id] = result.totalBorrowCount;
-    });
-    console.log(idSachToCountMap);
-  });
-    res.json(result);
+      {
+        $sort: { totalLuotMuon: -1 }
+      },
+      {
+        $limit: 10
+      }
+    ]).exec();
+
+    res.json(topSach);
   } catch (error) {
     res.status(500).json({ error: 'Internal Server Error' });
   }
-
-
 });
+//tính tổng số lượt mượn
 
+app.get('/soLuotMuon', async (req, res) => {
+  try {
+    const pipeline = [
+      {
+        $group: {
+          _id: null,
+          totalMuon: { $sum: 1 },
+        },
+      },
+    ];
+    const result = await PhieuMuon.aggregate(pipeline).exec();
+    const totalMuon = result.length > 0 ? result[0].totalMuon : 0;
 
+    res.json({ totalMuon });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'An error occurred' });
+  }
+});
 // app.listen(3000, "192.168.1.135"); // e.g. app.listen(3000, "192.183.190.3");
 app.listen(port, hostname, () => {
         console.log(`Server running at http://${hostname}:${port}`)
