@@ -430,8 +430,6 @@ app.get('/top-10-books', async (req, res) => {
 
 
 });
-
-
 app.get('/top10', async (req, res) => {
 
   try {

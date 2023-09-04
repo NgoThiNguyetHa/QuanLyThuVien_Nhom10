@@ -18,7 +18,8 @@ import { log } from "react-native-reanimated";
 import {Picker} from '@react-native-picker/picker';
 // import axios from 'axios';
 export default function ThongKe() {
-  const hostname = '192.168.126.1';
+  const hostname = '192.168.126.1'; //ha
+  // const hostname = "192.168.1.7"; //long
   //top 10
   const [topBooks, setTopBooks] = useState([]);
   //set ngay picker
