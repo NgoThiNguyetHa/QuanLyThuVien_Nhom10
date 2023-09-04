@@ -7,7 +7,10 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 export default function Login(props) {
   const [username, setusername] = useState("");
   const [passwd, setpasswd] = useState("");
-  const hostname = '192.168.1.6';
+  //long
+  // const hostname = '192.168.1.6';
+  const hostname = '192.168.126.1'; //hantnph28876
+
   const doLogin = () => {
     if (username.length == 0) {
       alert("Chưa nhập username");

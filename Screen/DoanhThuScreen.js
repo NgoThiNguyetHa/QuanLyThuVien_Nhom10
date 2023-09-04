@@ -6,6 +6,8 @@ import moment from 'moment';
 import { log } from 'react-native-reanimated';
 
 export default function DoanhThuScreen() {
+  const hostname = '192.168.126.1'; //hantnph28876
+
   const [isStartDatePickerVisible, setStartDatePickerVisible] = useState(false);
   const [isEndDatePickerVisible, setEndDatePickerVisible] = useState(false);
 
@@ -66,7 +68,7 @@ export default function DoanhThuScreen() {
       redirect: 'follow'
     };
 
-    fetch(`http://192.168.126.1:3000/doanhThu?startDate=${startDate}&endDate=${endDate}`, requestOptions)
+    fetch(`http://${hostname}:3000/doanhThu?startDate=${startDate}&endDate=${endDate}`, requestOptions)
       .then(response => response.json())
       .then(result => {
         if (result) {
@@ -143,7 +145,7 @@ export default function DoanhThuScreen() {
         <Text style={{ fontSize: 16, fontWeight: 'bold' }}>Doanh thu: </Text>
         <Text style={{ fontSize: 16, fontWeight: 'bold' }}>{getDoanhThu()+" VND"}</Text>
       </View>
-      <View style={{ alignItems: 'center', flex: 1, width: "100%", marginTop: -270 }}>
+      <View style={{ alignItems: 'center', flex: 1, width: "100%", marginTop: -350 }}>
         <FlatList
           style={{ flex: 1, width: "85%", }}
           data={listPhieuMuon}
@@ -152,26 +154,26 @@ export default function DoanhThuScreen() {
           refreshing={loading}
           renderItem={({ item }) => (
               <View
-                style={{
-                  borderWidth: 0.5,
-                  borderRadius: 10,
-                  margin: 10,
-                  padding: 5,
-                  flexDirection: "row",
-                  borderColor: "white",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  backgroundColor: "#FAFAFA",
-                  elevation: 5,
+                style={{ borderWidth: 0.5, borderRadius: 10, margin: 10,
+                  padding: 5, flexDirection: "row", borderColor: "white",
+                  justifyContent: "space-between", alignItems: "center", backgroundColor: "#FAFAFA", elevation: 5,
                 }}
               >
                 <View style={{ flexDirection: 'row', flex: 5, alignItems: 'center', justifyContent: 'center' }}>
                   <Image
                     style={{ borderRadius: 60, width: 100, height: 100, marginLeft: 5, marginRight: 5 }}
-                    source={{
-                      uri: 'https://reactnative.dev/img/tiny_logo.png',
-                    }}
+                    // source={{
+                    //   uri: 'http://ipvietnam.gov.vn/image/layout_icon?img_id=87580'
+                    // }}
+                    // source={{
+                    //   uri: 'https://reactnative.dev/img/tiny_logo.png'
+                    // }}
+                    source={{ uri: item.maSach.image }}
+                    
+                    
                   />
+                  
+                  
                   <View style={{ margin: 5, flexDirection: 'column', flex: 3 }}>
 
 
