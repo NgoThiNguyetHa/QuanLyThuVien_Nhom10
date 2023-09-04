@@ -33,7 +33,7 @@ export default function ThongKe() {
         .catch(error => console.error(error));
   }
   const getTongSoLuotMuon = () => {
-    fetch(`http://${hostname}:3000/soLuotMuon`)
+    fetch(`http://${hostname}:3000/soLuotMuon?month=${selectedValue}`)
       .then(response => response.json())
       .then(data => {
         setTotalMuon(data.totalMuon);
@@ -45,7 +45,7 @@ export default function ThongKe() {
     useEffect(() => {
         {
           getTop10WithMonth(selectedValue)
-          getTongSoLuotMuon();
+          getTongSoLuotMuon(selectedValue);
         }
     }, []);
 

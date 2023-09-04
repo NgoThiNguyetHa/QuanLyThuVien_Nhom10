@@ -522,11 +522,24 @@ app.get('/top10WithMonth/', async (req, res) => {
 
 app.get('/soLuotMuon', async (req, res) => {
   try {
+    const month = req.query.month;
     const pipeline = [
+      {
+        $match: {
+          ngayMuon: {
+            // $regex: `${month}-2023`
+            // $regex: `08-2023`
+            $regex: month
+          }
+        }
+      },
       {
         $group: {
           _id: null,
           totalMuon: { $sum: 1 },
+          ngayMuon: {
+            $regex: month
+          }
         },
       },
     ];
@@ -539,8 +552,7 @@ app.get('/soLuotMuon', async (req, res) => {
     res.status(500).json({ error: 'An error occurred' });
   }
 });
-//chưa bật máy ảo à b 
-//cái này chạy kj thé k có app 
+
 // app.listen(3000, "192.168.1.135"); // e.g. app.listen(3000, "192.183.190.3");
 app.listen(port, hostname, () => {
         console.log(`Server running at http://${hostname}:${port}`)
