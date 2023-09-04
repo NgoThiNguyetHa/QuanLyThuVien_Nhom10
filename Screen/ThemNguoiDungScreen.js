@@ -12,7 +12,9 @@ export default function ThemNguoiDungScreen() {
   const [dsnd, setdsnd] = useState([]);
   //set dialog 
   const [modalVisible, setModalVisible] = useState(false);
-  const hostname = '192.168.1.2';
+  // const hostname = '192.168.1.2'; //long
+  const hostname = '192.168.126.1'; //hantnph28876
+
   //get dữ liệu lên flatlist
   useEffect (() => {
     // getListNguoiDung();

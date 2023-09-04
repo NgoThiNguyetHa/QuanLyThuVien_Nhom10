@@ -18,24 +18,34 @@ import { log } from "react-native-reanimated";
 import {Picker} from '@react-native-picker/picker';
 // import axios from 'axios';
 export default function ThongKe() {
-  const hostname = "192.168.1.6";
+  const hostname = '192.168.126.1';
   //top 10
   const [topBooks, setTopBooks] = useState([]);
-  //tổng số lượt mượn
-  const [bookCounts, setBookCounts] = useState({});
-
-  const [selectedMonth, setSelectedMonth] = useState("08");
   //set ngay picker
-  const [isDatePickerVisible, setIsPickerVisible] = useState(false);
+  const [selectedValue, setSelectedValue] = useState('08-2023');
+  const [totalMuon, setTotalMuon] = useState(0);
 
-  const [selectDate, setSelectDate] = useState("");
-
-    
-    useEffect(() => {
-      fetch(`http://${hostname}:3000/top-10-books`)
+  const getTop10WithMonth = (selectedValue) => {
+    fetch(`http://${hostname}:3000/top10WithMonth?month=${selectedValue}`)
         .then(response => response.json())
         .then(data => setTopBooks(data))
         .catch(error => console.error(error));
+  }
+  const getTongSoLuotMuon = () => {
+    fetch(`http://${hostname}:3000/soLuotMuon`)
+      .then(response => response.json())
+      .then(data => {
+        setTotalMuon(data.totalMuon);
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  }
+    useEffect(() => {
+        {
+          getTop10WithMonth(selectedValue)
+          getTongSoLuotMuon();
+        }
     }, []);
 
   const renderItem = ({ item }) => (
@@ -66,13 +76,34 @@ export default function ThongKe() {
         {item.tenSach}
       </Text>
       <Text style={{ width: "100%", marginRight: 10, textAlign: "right" }}>
-        {item.count} lượt mượn
+        {item.totalLuotMuon} lượt mượn
       </Text>
     </View>
   );
   return (
     <View style={styles.container}>
       {/* tổng lượt mượn  */}
+      <Picker
+      style={{backgroundColor:"white"}}
+        selectedValue={selectedValue}
+        onValueChange={(itemValue, itemIndex) => {setSelectedValue(itemValue)
+
+        getTop10WithMonth(itemValue)
+      console.log(itemValue)}}
+      >
+        <Picker.Item label="Tháng 1" value="01-2023" />
+        <Picker.Item label="Tháng 2" value="02-2023" />
+        <Picker.Item label="Tháng 3" value="03-2023" />
+        <Picker.Item label="Tháng 4" value="04-2023" />
+        <Picker.Item label="Tháng 5" value="05-2023" />
+        <Picker.Item label="Tháng 6" value="06-2023" />
+        <Picker.Item label="Tháng 7" value="07-2023" />
+        <Picker.Item label="Tháng 8" value="08-2023" />
+        <Picker.Item label="Tháng 9" value="09-2023" />
+        <Picker.Item label="Tháng 10" value="10-2023" />
+        <Picker.Item label="Tháng 11" value="11-2023" />
+        <Picker.Item label="Tháng 12" value="12-2023" />
+      </Picker>
       <View
         style={{
           width: "90%",
@@ -99,18 +130,16 @@ export default function ThongKe() {
         <Text style={{ color: "#4696EB", fontSize: 15 }}>
           Thống kê top 10 theo số lượt mượn sách
         </Text>
-        {Object.keys(bookCounts).map(idSach => (
-        <Text key={idSach}>
-          Số lần mượn sách có idSach {idSach}: {bookCounts[idSach]}
-        </Text>
-      ))}
-        <Text style={{ fontSize: 15 }}> Tổng số lượt mượn : 10</Text>
+  
+        <Text>Tổng số lượt mượn sách: {totalMuon}</Text>
       </View>
 
       {/* flat list  */}
       <FlatList
         style={{ flex: 1, width: "100%" }}
         data={topBooks}
+        onRefresh={() => getTop10WithMonth()}
+        refreshing={false}
         renderItem={renderItem}
         keyExtractor={(item) => item._id}
       />

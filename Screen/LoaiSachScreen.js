@@ -8,7 +8,9 @@ import * as ImagePicker from 'expo-image-picker';
 
 export default function LoaiSachScreen() {
   //long
-  const hostname = "192.168.1.4";
+  // const hostname = "192.168.1.4";
+  const hostname = '192.168.126.1'; //hantnph28876
+
   //=====//
   const [_id, setId] = useState();
   const [tenLoaiSach, setTenLoaiSach] = useState();
@@ -215,9 +217,9 @@ export default function LoaiSachScreen() {
       {/* flat list - danh sách thành viên*/}
 
       <FlatList
-        style={{ flex: 0.9, width: "85%" }}
+        style={{ flex: 0.9, width: "85%", background: 'red' }}
         // contentContainerStyle = {{justifyContent:'center', alignItems:"center"}}
-        contentContainerStyle={{ flexGrow: 1, justifyContent: 'space-evenly', }}
+        contentContainerStyle={{ flexGrow: 1, justifyContent: 'space-evenly'}}
          
         data={listLoaiSach}
         numColumns={2}
@@ -226,7 +228,7 @@ export default function LoaiSachScreen() {
         refreshing={loading}
         renderItem={({ item }) => (
 
-          <TouchableOpacity style={{marginLeft:10, marginRight:10}}
+          <TouchableOpacity style={{marginLeft:10, marginRight:10, marginBottom:100}}
             onPress={() => {
               setModalVisible(true),
                 setBtnLeft("Update"),

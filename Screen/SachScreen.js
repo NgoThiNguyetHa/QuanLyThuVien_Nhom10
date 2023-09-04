@@ -35,8 +35,11 @@ export default function SachScreen() {
   const [btnRight, setBtnRight] = useState("");
 
   //searchview flatlist
-  //mới
-  const hostname = "192.168.1.4";
+  //long
+  // const hostname = "192.168.1.4";
+  const hostname = '192.168.126.1'; //hantnph28876
+
+
   const [search,setSearch] = useState("");
   const [oldListSach,setOldListSach] = useState([]);
 

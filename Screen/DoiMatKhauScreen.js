@@ -16,7 +16,9 @@ export default function DoiMatKhauScreen({route}) {
   const [showReNew,setShowReNew] = useState(true);
 
 
-  const hostname = "192.168.1.6";
+//   const hostname = "192.168.1.6"; //long
+  const hostname = '192.168.126.1'; //hantnph28876
+
   // const handleUpdate = () => {
   //   const allInputValue = {
   //     password: newPassword,

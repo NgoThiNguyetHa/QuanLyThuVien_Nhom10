@@ -51,8 +51,10 @@ export default function PhieuMuonScreen() {
   const [btnLeft, setBtnLeft] = useState("");
   const [btnRight, setBtnRight] = useState("");
   //searchview flatlist
-  //mới
-  const hostname = "192.168.1.4";
+  //long
+  // const hostname = "192.168.1.4";
+  const hostname = '192.168.126.1'; //hantnph28876
+
   const [search,setSearch] = useState("");
   const [oldListPM,setOldPM] = useState([]);
 
@@ -394,9 +396,7 @@ export default function PhieuMuonScreen() {
               <View style={{ flexDirection: 'row', flex:5, alignItems:'center', justifyContent:'center' }}>
                 <Image
                   style={{borderRadius:60, width:100, height:100, marginLeft:5, marginRight:5}}
-                  source={{
-                    uri: 'https://reactnative.dev/img/tiny_logo.png',
-                  }}
+                  source={{ uri: item.maSach.image }}
                 />
                 <View style={{ margin: 5, flexDirection: 'column', flex:3 }}>
 
