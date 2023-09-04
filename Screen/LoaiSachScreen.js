@@ -1,15 +1,24 @@
-import React from 'react'
+import React from "react";
 import { useEffect, useState } from "react";
 import {
-  StyleSheet, Text, TextInput, View, Image, TouchableOpacity, FlatList, Modal, Button,
-  Alert
-} from 'react-native';
-import * as ImagePicker from 'expo-image-picker';
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+  Image,
+  TouchableOpacity,
+  FlatList,
+  Modal,
+  Button,
+  Alert,
+} from "react-native";
+import * as ImagePicker from "expo-image-picker";
+import { colors } from "react-native-elements";
 
 export default function LoaiSachScreen() {
-  //long
-  // const hostname = "192.168.1.4";
+
   const hostname = '192.168.126.1'; //hantnph28876
+  //const hostname = "192.168.1.7"; //long
 
   //=====//
   const [_id, setId] = useState();
@@ -28,18 +37,18 @@ export default function LoaiSachScreen() {
   const [btnRight, setBtnRight] = useState("");
 
   //search view
-  const [search,setSearch] = useState("");
-  const [oldListLoaiSach,setOldListLoaiSach] = useState([]);
+  const [search, setSearch] = useState("");
+  const [oldListLoaiSach, setOldListLoaiSach] = useState([]);
 
   const onSearch = (text) => {
-    if(text == ''){
-      setListLoaiSach(oldListLoaiSach)
-    }else{
-    const tempList = listLoaiSach.filter(item => {
-      return item.tenLoaiSach.toLowerCase().indexOf(text.toLowerCase()) > -1 ; 
-    });
-    setListLoaiSach(tempList)
-  }
+    if (text == "") {
+      setListLoaiSach(oldListLoaiSach);
+    } else {
+      const tempList = listLoaiSach.filter((item) => {
+        return item.tenLoaiSach.toLowerCase().indexOf(text.toLowerCase()) > -1;
+      });
+      setListLoaiSach(tempList);
+    }
   };
   //click image
   const pickImage = async () => {
@@ -48,7 +57,7 @@ export default function LoaiSachScreen() {
       allowsEditing: true, // Tắt tùy chọn chỉnh sửa
       aspect: [4, 3],
       quality: 1,
-      allowsMultipleSelection: false
+      allowsMultipleSelection: false,
     });
 
     console.log(result.uri);
@@ -56,8 +65,8 @@ export default function LoaiSachScreen() {
     if (!result.cancelled && result.assets && result.assets.length > 0) {
       setImage(result.assets[0].uri, {
         uri: result.assets[0].uri,
-        type: 'image/jpeg',
-        name: 'image.jpg',
+        type: "image/jpeg",
+        name: "image.jpg",
       });
       setPicture(result.assets[0].uri);
     }
@@ -66,29 +75,29 @@ export default function LoaiSachScreen() {
   const insertLoaiSach = (tenLoaiSach) => {
     const loaiSach = {
       tenLoaiSach: tenLoaiSach,
-      image: picture
-    }
+      image: picture,
+    };
     if (tenLoaiSach.length == 0) {
-    Alert.alert("Thông báo" , "Tên loại sách không được để trống")
+      Alert.alert("Thông báo", "Tên loại sách không được để trống");
       return;
     }
     if (image.length == 0) {
-    Alert.alert("Thông báo" , "Yêu cầu chọn ảnh")
+      Alert.alert("Thông báo", "Yêu cầu chọn ảnh");
       return;
     }
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-  
+
     var requestOptions = {
-      method: 'POST',
+      method: "POST",
       headers: myHeaders,
       body: JSON.stringify(loaiSach),
     };
 
     fetch(`http://${hostname}:3000/insertLoaiSach`, requestOptions)
-      .then(response => response.json())
-      .then(result => console.log(result))
-      .catch(error => console.log('error', error));
+      .then((response) => response.json())
+      .then((result) => console.log(result))
+      .catch((error) => console.log("error", error));
     getListLoaiSach();
     setModalVisible(!modalVisible);
     Alert.alert("Thêm thành công");
@@ -97,49 +106,49 @@ export default function LoaiSachScreen() {
 
     setTenLoaiSach("");
     console.log(loaiSach);
-  }
+  };
 
   const deleteLoaiSach = (_id) => {
     var requestOptions = {
-      method: 'DELETE',
-      redirect: 'follow'
+      method: "DELETE",
+      redirect: "follow",
     };
 
     fetch(`http://${hostname}:3000/deleteLoaiSach/${_id}`, requestOptions)
-      .then(response => response.json())
-      .then(response => {
+      .then((response) => response.json())
+      .then((response) => {
         console.log(response);
         getListLoaiSach();
       })
-      .catch(error => console.log('error', error));
-  }
+      .catch((error) => console.log("error", error));
+  };
 
   const updateLoaiSach = (_id, tenLoaiSach, picutre) => {
     const loaiSach = {
       tenLoaiSach: tenLoaiSach,
-      image: picutre
-    }
+      image: picutre,
+    };
     if (tenLoaiSach.length == 0) {
-    Alert.alert("Thông báo" , "Tên loại sách không được để trống")
+      Alert.alert("Thông báo", "Tên loại sách không được để trống");
       return;
     }
     if (image.length == 0) {
-    Alert.alert("Thông báo" , "Yêu cầu chọn ảnh")
+      Alert.alert("Thông báo", "Yêu cầu chọn ảnh");
       return;
     }
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
 
     var requestOptions = {
-      method: 'PUT',
+      method: "PUT",
       headers: myHeaders,
       body: JSON.stringify(loaiSach),
-      redirect: 'follow'
+      redirect: "follow",
     };
 
     fetch(`http://${hostname}:3000/updateLoaiSach/${_id}`, requestOptions)
-      .then(response => response.json())
-      .then(response => {
+      .then((response) => response.json())
+      .then((response) => {
         console.log(response);
         getListLoaiSach();
         setModalVisible(!modalVisible);
@@ -147,31 +156,30 @@ export default function LoaiSachScreen() {
         setTenLoaiSach("");
         setImage([]);
       })
-      .catch(error => console.log('error', error));
-  }
+      .catch((error) => console.log("error", error));
+  };
 
   const getListLoaiSach = () => {
     var requestOptions = {
-      method: 'GET',
-      redirect: 'follow'
+      method: "GET",
+      redirect: "follow",
     };
 
     fetch(`http://${hostname}:3000/getLoaiSach`, requestOptions)
-      .then(response => response.json())
-      .then(response => {
+      .then((response) => response.json())
+      .then((response) => {
         if (response) {
-          setListLoaiSach(response)
-          setOldListLoaiSach(response)
-          setLoading(false)
+          setListLoaiSach(response);
+          setOldListLoaiSach(response);
+          setLoading(false);
         }
       })
-      .catch(error => console.log('error', error));
-  }
+      .catch((error) => console.log("error", error));
+  };
 
   useEffect(() => {
-    getListLoaiSach()
-    
-  }, [])
+    getListLoaiSach();
+  }, []);
 
   const edit = (id, tenLoaiSach, image) => {
     console.log(id);
@@ -179,7 +187,7 @@ export default function LoaiSachScreen() {
     setId(id);
     setTenLoaiSach(tenLoaiSach);
     setImage(image);
-  }
+  };
 
   return (
     <View style={styles.container}>
@@ -198,76 +206,82 @@ export default function LoaiSachScreen() {
           underlineColorAndroid="transparent"
           mode="outlined"
           value={search}
-          onChangeText={text => {
+          onChangeText={(text) => {
             onSearch(text);
             setSearch(text);
           }}
         />
-        {search == '' ? null :(
-        <TouchableOpacity
-        style={{marginRight:15}}
-        onPress={() => {
-          setSearch("");
-        }}
-        >
-          <Text>X</Text>
-        </TouchableOpacity>
-      )}
+        {search == "" ? null : (
+          <TouchableOpacity
+            style={{ marginRight: 15 }}
+            onPress={() => {
+              setSearch("");
+            }}
+          >
+            <Text>X</Text>
+          </TouchableOpacity>
+        )}
       </View>
       {/* flat list - danh sách thành viên*/}
 
-      <FlatList
-        style={{ flex: 0.9, width: "85%", background: 'red' }}
-        // contentContainerStyle = {{justifyContent:'center', alignItems:"center"}}
-        contentContainerStyle={{ flexGrow: 1, justifyContent: 'space-evenly'}}
-         
-        data={listLoaiSach}
-        numColumns={2}
-        keyExtractor={(item, index) => item._id}
-        onRefresh={() => getListLoaiSach()}
-        refreshing={loading}
-        renderItem={({ item }) => (
+       <FlatList
+      keyExtractor={(item, index) => item._id}
+      onRefresh={() => getListLoaiSach()}
+      refreshing={loading}
+      style={{marginTop:5}}
+      data={listLoaiSach}
+      numColumns={2}
+      renderItem={({ item, index }) => (
+          <TouchableOpacity
+            style={{
+              flex: 0.5,
+              height: 200,
+              marginLeft: index % 2 == 0 ? 10 : 0,
+              marginTop: 5,
+              marginRight:10,
+              marginBottom:5,
+              borderRadius:15,
+              borderColor:colors.inactive,
+              borderWidth:0.5,
+            }}
+onPress={() => {
 
-          <TouchableOpacity style={{marginLeft:10, marginRight:10, marginBottom:100}}
-            onPress={() => {
               setModalVisible(true),
                 setBtnLeft("Update"),
                 setBtnRight("Delete"),
-                edit(item._id, item.tenLoaiSach, item.image)
-            }}>
-
+                edit(item._id, item.tenLoaiSach, item.image);
+            }}
+          >
             <View
               style={{
-                borderWidth: 0.5,
-                borderRadius: 10,
-                marginHorizontal: 5,
-                marginTop: -180,
-                // padding: 5,
-                flexDirection: "row",
-                borderColor: "white",
+                flexDirection: "column",
                 alignItems: "center",
-                backgroundColor: "#FAFAFA",
-                elevation: 5,
-                
-                
-
-                justifyContent:"center",
-                // flex: 1,
-                // flexDirection: 'column',
-                // margin: 1
-
+                justifyContent: "center",
+                height: "100%",
+                flexDirection: index % 2 == 0 ? "column-reverse" : "column",
               }}
             >
-              <View style={{ flexDirection: "column", alignItems: "center", justifyContent: "center", padding: 5, margin:4 }}>
-                <Image source={{ uri: item.image }} style={{ width: 100, height: 100, borderRadius: 10, margin: 10 }} />
-                <Text style={{ textAlign: "center", alignSelf: "center", fontWeight: "bold" }}> {item.tenLoaiSach}</Text>
+              <Image
+                source={{ uri: item.image }}
+                style={{
+                  width: "70%",
+                  height: "70%",
+                  margin: 10,
+                  resizeMode:"cover"
+                }}
+              />
+              <Text
+                style={{
+                  textAlign: "center",
+                  alignSelf: "center",
+                  fontWeight: "bold",
+                  fontSize:15,
 
-              </View>
-              {/* dialog delete */}
-
-
+                }}
+              >
+                {item.tenLoaiSach}
+              </Text>
             </View>
-
           </TouchableOpacity>
         )}
       />
@@ -305,8 +319,8 @@ export default function LoaiSachScreen() {
                   alignSelf: "center",
                 }}
               />
-            ) : //không có ảnh 
-              null}
+            ) : //không có ảnh
+            null}
             <TouchableOpacity
               style={{
                 width: "100%",
@@ -339,7 +353,8 @@ export default function LoaiSachScreen() {
                 visible="false"
                 onPress={() => {
                   // _id, selectedLoai, tenSach, giaThue
-                  if (_id && tenLoaiSach) { // nếu _id , name , namSinh == true trùng với dữ liệu th
+                  if (_id && tenLoaiSach) {
+                    // nếu _id , name , namSinh == true trùng với dữ liệu th
                     updateLoaiSach(_id, tenLoaiSach, picture);
                   } else {
                     insertLoaiSach(tenLoaiSach);
@@ -351,47 +366,46 @@ export default function LoaiSachScreen() {
               <Button
                 title={btnRight}
                 onPress={() => {
-
                   setTenLoaiSach("");
                   setImage([]);
                   if (_id) {
                     Alert.alert(
                       //title
-                      'Thông Báo!',
+                      "Thông Báo!",
                       //body
-                      'Bạn có chắc chắn muốn xóa không?',
+                      "Bạn có chắc chắn muốn xóa không?",
                       [
                         {
-                          text: 'Có',
+                          text: "Có",
                           onPress: () => {
                             // handleRemove(item._id)
-                            deleteLoaiSach(_id)
-                          }
+                            deleteLoaiSach(_id);
+                          },
                         },
                         {
-                          text: 'Không',
+                          text: "Không",
                           onPress: () => {
-                            setModalVisible(!modalVisible)
+                            setModalVisible(!modalVisible);
                             setId(0);
                             setTenLoaiSach("");
                             setImage([]);
 
-                            setBtnLeft("")
-                            setBtnRight("")
-                          }, style: 'cancel'
+                            setBtnLeft("");
+                            setBtnRight("");
+                          },
+                          style: "cancel",
                         },
                       ],
-                      { cancelable: false },
+                      { cancelable: false }
                     );
-                    setModalVisible(false)
-
+                    setModalVisible(false);
                   } else {
-                    setModalVisible(!modalVisible)
+                    setModalVisible(!modalVisible);
                     setId(0);
                     setTenLoaiSach("");
                     setImage([]);
-                    setBtnLeft("")
-                    setBtnRight("")
+                    setBtnLeft("");
+                    setBtnRight("");
                   }
                 }}
                 color="#009ACD"
@@ -426,10 +440,8 @@ export default function LoaiSachScreen() {
         </View>
       </Modal>
 
-
       {/* btn open dialog  */}
       <View style={{ width: "100%", alignItems: "flex-end" }}>
-
         <TouchableOpacity
           style={{
             borderColor: "white",
@@ -441,10 +453,12 @@ export default function LoaiSachScreen() {
             borderBottomRightRadius: 30,
             borderTopRightRadius: 30,
             borderTopLeftRadius: 30,
-            overflow: 'hidden',
-            padding: 10
+            overflow: "hidden",
+            padding: 10,
           }}
-          onPress={() => { setModalVisible(true), setBtnLeft("Save"), setBtnRight("Cancel") }}
+          onPress={() => {
+            setModalVisible(true), setBtnLeft("Save"), setBtnRight("Cancel");
+          }}
         >
           <Image
             style={{ width: 25, height: 25, padding: 15 }}
@@ -454,19 +468,16 @@ export default function LoaiSachScreen() {
           />
         </TouchableOpacity>
       </View>
-
-
-
     </View>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#B0E2FF',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "#B0E2FF",
+    // alignItems: 'center',
+    // justifyContent: 'center',
   },
   // search view
   inputContainer: {
@@ -474,7 +485,7 @@ const styles = StyleSheet.create({
   },
   //search view
   sectionStyle: {
-    width: "80%",
+    width: "90%",
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
@@ -484,19 +495,20 @@ const styles = StyleSheet.create({
     margin: 10,
     borderRadius: 5,
     elevation: 10,
+    alignSelf: "center",
   },
   // style dialog
   centeredView: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   modalView: {
     margin: 20,
-    backgroundColor: 'white',
+    backgroundColor: "white",
     borderRadius: 20,
     padding: 30,
-    shadowColor: '#000',
+    shadowColor: "#000",
     elevation: 5,
   },
   button: {
@@ -505,24 +517,41 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   buttonOpen: {
-    backgroundColor: '#525EAA',
+    backgroundColor: "#525EAA",
   },
   buttonClose: {
     backgroundColor: "#525EAA",
   },
   textStyle: {
-    color: 'white',
-    fontWeight: 'bold',
-    textAlign: 'center',
+    color: "white",
+    fontWeight: "bold",
+    textAlign: "center",
   },
   modalText: {
     marginBottom: 15,
-    textAlign: 'center',
+    textAlign: "center",
   },
   inputStyle: {
     margin: 5,
     borderWidth: 1,
     padding: 5,
     borderRadius: 10,
+  },
+  //
+
+  GridViewContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    height: 100,
+    margin: 5,
+    backgroundColor: "#7B1FA2",
+  },
+  GridViewTextLayout: {
+    fontSize: 20,
+    fontWeight: "bold",
+    justifyContent: "center",
+    color: "#fff",
+    padding: 10,
   },
 });
