@@ -13,6 +13,7 @@ import DoanhThuScreen from './DoanhThuScreen';
 import DoiMatKhau from './DoiMatKhauScreen'
 import ThongKe from './ThongKeTop10';
 import Login from './Login';
+import ManHinhChao from './ManHinhChao'
 const drawer = createDrawerNavigator();
 
 export default function Menu({ route}) {
@@ -51,10 +52,15 @@ export default function Menu({ route}) {
       {user.username === 'admin' ? (
         <drawer.Screen name='Thêm người dùng' component={ThemNguoiDungScreen}
         />
-      ) : null}
-      <drawer.Screen name='Đổi mật khẩu' component={DoiMatKhau}
-        initialParams={{ user }} />
-      
+        ) : null}
+        <drawer.Screen name='Đổi mật khẩu' component={DoiMatKhau}
+        initialParams={{ user }}/>
+        <drawer.Screen name='Đăng xuất' component={ManHinhChao} 
+        options={{headerShown: false}} 
+        />
+        
+      </drawer.Navigator>
+    
 
     </drawer.Navigator>
 
