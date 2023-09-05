@@ -4,7 +4,9 @@ import { StyleSheet,Text, TextInput, View, Image , TouchableOpacity  , FlatList 
 Alert} from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 export default function ThanhVienScreen() {
-  const hostname = '192.168.1.4';
+  // const hostname = '192.168.1.4';//long
+  const hostname = '192.168.126.1'; //hantnph28876
+
   const [_id,setId] = useState();
   const [name,setName] = useState("");
   const [namSinh,setNamSinh] = useState("");

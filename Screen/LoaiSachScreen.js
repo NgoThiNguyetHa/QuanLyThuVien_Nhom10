@@ -16,8 +16,10 @@ import * as ImagePicker from "expo-image-picker";
 import { colors } from "react-native-elements";
 
 export default function LoaiSachScreen() {
-  //long
-  const hostname = "192.168.1.7";
+
+  const hostname = '192.168.126.1'; //hantnph28876
+  //const hostname = "192.168.1.7"; //long
+
   //=====//
   const [_id, setId] = useState();
   const [tenLoaiSach, setTenLoaiSach] = useState();
@@ -243,6 +245,7 @@ export default function LoaiSachScreen() {
               borderWidth:0.5,
             }}
 onPress={() => {
+
               setModalVisible(true),
                 setBtnLeft("Update"),
                 setBtnRight("Delete"),
